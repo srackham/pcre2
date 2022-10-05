@@ -22,6 +22,4 @@ docs:
 	v doc -f html -readme -o docs .
 
 run-examples:
-	for f in examples/pcre2-example-*.v; do
-		v run $$f
-	done
+	bash -c 'cd examples && for f in pcre2-example-*.v; do v run $$f; done'

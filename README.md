@@ -22,13 +22,18 @@ fn main() {
 	subject := 'Lorem nisi dis diam a cras placerat natoque'
 
 	// Extract array of all matched strings.
-	println(r.find(subject, -1)) // ['nisi', 'dis', 'diam', 'natoque']
+	a := r.find(subject, -1)
+	println(a) // ['nisi', 'dis', 'diam', 'natoque']
 
-	// Convert all matched strings to upper case.
-	s := r.replace_fn(subject, fn (m string) string {
+	// Quote matched words.
+	s1 := r.replace(subject, '"$0"', -1)
+	println(s1) // 'Lorem "nisi" "dis" "diam" a cras placerat "natoque"'
+
+	// Replace all matched strings with upper case.
+	s2 := r.replace_fn(subject, fn (m string) string {
 		return m.to_upper()
 	}, -1)
-	println(s) // 'Lorem NISI DIS DIAM a cras placerat NATOQUE'
+	println(s2) // 'Lorem NISI DIS DIAM a cras placerat NATOQUE'
 }
 ```
 For more examples see inside the [examples directory](examples) and take a look at the [module tests](pcre2_test.v).
@@ -50,4 +55,4 @@ Install the PCRE2 library:
 
 Test the installation by running:
 
-    v test .
+    v test $HOME/.vmodules/pcre2

@@ -11,7 +11,7 @@ A V library module for processing [Perl Compatible Regular Expressions (PCRE)](h
 - [pcre2 module documentation](https://srackham.github.io/pcre2/pcre2.html).
 - [PCRE regular expressions syntax](https://www.pcre.org/current/doc/html/pcre2syntax.html).
 
-## Example
+## Examples
 ```v
 import pcre2
 
@@ -26,7 +26,7 @@ fn main() {
 	println(a) // ['nisi', 'dis', 'diam', 'natoque']
 
 	// Quote matched words.
-	s1 := r.replace(subject, '"$0"', -1)
+	s1 := r.replace(subject, '"$1"', -1)
 	println(s1) // 'Lorem "nisi" "dis" "diam" a cras placerat "natoque"'
 
 	// Replace all matched strings with upper case.
@@ -56,3 +56,7 @@ Install the PCRE2 library:
 Test the installation by running:
 
     v test $HOME/.vmodules/pcre2
+
+## To Do
+- Github CI testing.
+- Windows 10.

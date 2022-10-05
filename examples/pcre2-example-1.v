@@ -11,7 +11,7 @@ fn main() {
 	println(a) // ['nisi', 'dis', 'diam', 'natoque']
 
 	// Quote matched words.
-	s1 := r.replace(subject, '"$0"', -1)
+	s1 := r.replace(subject, '"$1"', -1)
 	println(s1) // 'Lorem "nisi" "dis" "diam" a cras placerat "natoque"'
 
 	// Replace all matched strings with upper case.

@@ -89,10 +89,10 @@
 </ul>
 <h2>Documentation</h2>
 <ul>
-<li><a href="https://srackham.github.io/pcre2">pcre2 module documentation</a>.</li>
+<li><a href="https://srackham.github.io/pcre2/pcre2.html">pcre2 module documentation</a>.</li>
 <li><a href="https://www.pcre.org/current/doc/html/pcre2syntax.html">PCRE regular expressions syntax</a>.</li>
 </ul>
-<h2>Example</h2>
+<h2>Examples</h2>
 <pre><code class="language-v">import pcre2
 
 fn main() {
@@ -102,13 +102,18 @@ fn main() {
     subject := 'Lorem nisi dis diam a cras placerat natoque'
 
     // Extract array of all matched strings.
-    println(r.find(subject, -1)) // ['nisi', 'dis', 'diam', 'natoque']
+    a := r.find(subject, -1)
+    println(a) // ['nisi', 'dis', 'diam', 'natoque']
 
-    // Convert all matched strings to upper case.
-    s := r.replace_fn(subject, fn (m string) string {
+    // Quote matched words.
+    s1 := r.replace(subject, '&quot;$1&quot;', -1)
+    println(s1) // 'Lorem &quot;nisi&quot; &quot;dis&quot; &quot;diam&quot; a cras placerat &quot;natoque&quot;'
+
+    // Replace all matched strings with upper case.
+    s2 := r.replace_fn(subject, fn (m string) string {
         return m.to_upper()
     }, -1)
-    println(s) // 'Lorem NISI DIS DIAM a cras placerat NATOQUE'
+    println(s2) // 'Lorem NISI DIS DIAM a cras placerat NATOQUE'
 }
 </code></pre>
 <p>For more examples see inside the <a href="examples">examples directory</a> and take a look at the <a href="pcre2_test.v">module tests</a>.</p>
@@ -121,6 +126,14 @@ fn main() {
 <h2>Installation</h2>
 <pre><code>v install --git https://github.com/srackham/pcre2
 </code></pre>
+<p>Test the installation by running:</p>
+<pre><code>v test $HOME/.vmodules/pcre2
+</code></pre>
+<h2>To Do</h2>
+<ul>
+<li>Github CI testing.</li>
+<li>Windows 10.</li>
+</ul>
 
 </section>
 
@@ -237,7 +250,7 @@ If no match is found an error is returned.</p>
 </section>
 
           <div class="footer">
-            Powered by vdoc. Generated on: 5 Oct 2022 17:31:26
+            Powered by vdoc. Generated on: 6 Oct 2022 10:12:58
           </div>
         </div>
         

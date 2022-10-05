@@ -10,6 +10,7 @@ A V library module for processing [Perl Compatible Regular Expressions (PCRE)](h
 ## Documentation
 - [pcre2 module documentation](https://srackham.github.io/pcre2/pcre2.html).
 - [PCRE regular expressions syntax](https://www.pcre.org/current/doc/html/pcre2syntax.html).
+- [Github repository](https://github.com/srackham/pcre2)
 
 ## Examples
 ```v
@@ -36,7 +37,7 @@ fn main() {
 	println(s2) // 'Lorem NISI DIS DIAM a cras placerat NATOQUE'
 }
 ```
-For more examples see inside the [examples directory](examples) and take a look at the [module tests](pcre2_test.v).
+For more examples see inside the [examples directory](https://github.com/srackham/pcre2/tree/master/examples) and take a look at the [module tests](https://github.com/srackham/pcre2/blob/master/pcre2_test.v).
 
 ## Dependencies
 Install the PCRE2 library:

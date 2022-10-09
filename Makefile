@@ -12,7 +12,7 @@ SHELL := bash
 .PHONY: test build docs run-examples
 
 test:
-	v test .
+	v -cstrict test .
 	make run-examples
 
 build: test docs
@@ -22,4 +22,4 @@ docs:
 	v doc -f html -readme -o docs .
 
 run-examples:
-	bash -c 'cd examples && for f in pcre2-example-*.v; do v run $$f; done'
+	bash -c 'cd examples && for f in pcre2-example-*.v; do v -cstrict run $$f; done'

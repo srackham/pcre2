@@ -29,8 +29,10 @@ jobs:
     - name: Run tests
       run: v test pcre2
 
-    - name: Run example
-      run: v -cstrict run pcre2/examples/pcre2-example-1.v
+    - name: Run examples
+      run: |
+        v -cstrict run pcre2/examples/pcre2-example-1.v
+        v -cstrict run pcre2/examples/pcre2-example-2.v
 
     - name: Build example with -prod
       # Can't use -cstrict (see https://github.com/vlang/v/issues/16016)

@@ -3,7 +3,7 @@ name: Build and Test
 on: [push, pull_request]
 
 jobs:
-  test_matrix:
+  test-ubuntu-macos:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout Latest V
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           repository: vlang/v
           path: v
@@ -29,7 +29,7 @@ jobs:
         run: ${{ matrix.install-lib }}
 
       - name: Checkout pcre2
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: pcre2
 
@@ -48,3 +48,45 @@ jobs:
         # Can't use -cstrict (see https://github.com/vlang/v/issues/16016)
         #run: v -cc gcc -cstrict -prod pcre2/examples/pcre2-example-1.v
         run: v -cc gcc -prod pcre2/examples/pcre2-example-1.v
+
+  test-windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: cmd
+
+    steps:
+      - name: Checkout Latest V
+        uses: actions/checkout@v3
+        with:
+          repository: vlang/v
+          path: v
+
+      - name: Build V
+        run: |
+          cd v
+          .\make.bat
+          .\v.exe symlink
+
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+
+      - name: Install MYSYS2 package mingw-w64-x86_64-pcre2
+        run: |
+          C:\msys64\usr\bin\pacman.exe -S --noconfirm mingw-w64-x86_64-pcre2
+
+      - name: Install V module pcre2
+        run: |
+          .\v\v.exe install --git https://github.com/srackham/pcre2
+
+      - name: Run tests
+        run: |
+          .\v\v.exe test %USERPROFILE%\.vmodules\pcre2
+
+      - name: Run examples
+        run: |
+          .\v\v.exe run %USERPROFILE%/.vmodules/pcre2/examples/pcre2-example-1.v
+          .\v\v.exe run %USERPROFILE%/.vmodules/pcre2/examples/pcre2-example-2.v

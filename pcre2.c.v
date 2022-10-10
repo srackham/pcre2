@@ -1,6 +1,11 @@
 module pcre2
 
-#flag linux  -lpcre2-8
+#flag windows -I C:\msys64\mingw64\include
+#flag windows -L C:\msys64\mingw64\bin
+#flag windows -lpcre2-8-0
+
+#flag linux -lpcre2-8
+
 #flag darwin -lpcre2-8
 #flag darwin -I /opt/homebrew/include/
 

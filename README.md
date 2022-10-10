@@ -5,7 +5,7 @@ A V library module for processing [Perl Compatible Regular Expressions (PCRE)](h
 - The `pcre2` module is a thin wrapper for the PCRE2 8-bit runtime library.
 - Currently there are no extraction methods for named subpatterns.
 - The [pcre module](https://github.com/vlang/pcre) (which uses the older PCRE library) was the leading light for this project.
-- Many of the methods and functions were inspired by the [Go regex ppackage](https://pkg.go.dev/regexp).
+- Many of the methods and functions were inspired by the [Go regex package](https://pkg.go.dev/regexp).
 
 ## Documentation
 - [pcre2 module documentation](https://srackham.github.io/pcre2/pcre2.html).
@@ -59,5 +59,4 @@ Test the installation by running:
     v test $HOME/.vmodules/pcre2
 
 ## To Do
-- Github CI testing.
 - Windows 10.

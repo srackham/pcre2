@@ -25,7 +25,7 @@ jobs:
       - name: Build V
         run: cd v && make && sudo ./v symlink && cd -
 
-      - name: Install libpcre2-dev dependency
+      - name: Install pcre2 library dependency
         run: ${{ matrix.install-lib }}
 
       - name: Checkout pcre2

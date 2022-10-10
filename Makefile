@@ -17,9 +17,13 @@ test:
 
 build: test docs
 	v fmt -w *.v examples/*.v
+	# Can't use -cstrict (see https://github.com/vlang/v/issues/16016)
+	#v -cc gcc -cstrict -prod examples/pcre2-example-1.v
+	v -cc gcc -prod examples/pcre2-example-1.v
 
 docs:
 	v doc -f html -readme -o docs .
+	v check-md README.md
 
 run-examples:
 	bash -c 'cd examples && for f in pcre2-example-*.v; do v -cstrict run $$f; done'

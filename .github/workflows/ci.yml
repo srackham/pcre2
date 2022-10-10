@@ -1,0 +1,38 @@
+name: Build and Test
+
+on: [push, pull_request]
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Latest V
+      uses: actions/checkout@v2
+      with:
+        repository: vlang/v
+        path: v
+
+    - name: Build V
+      run: cd v && make && sudo ./v symlink && cd -
+
+    - name: Install libpcre2-dev dependency
+      run: sudo apt-get install --quiet -y libpcre2-dev
+
+    - name: Checkout pcre2
+      uses: actions/checkout@v2
+      with:
+        path: pcre2
+
+    - name: Symlink pcre2 to ~/.vmodules
+      run: ln -s $(pwd)/pcre2 ~/.vmodules
+
+    - name: Run tests
+      run: v test pcre2
+
+    - name: Run example
+      run: v -cstrict run pcre2/examples/pcre2-example-1.v
+
+    - name: Build example with -prod
+      # Can't use -cstrict (see https://github.com/vlang/v/issues/16016)
+      #run: v -cc gcc -cstrict -prod pcre2/examples/pcre2-example-1.v
+      run: v -cc gcc -prod pcre2/examples/pcre2-example-1.v

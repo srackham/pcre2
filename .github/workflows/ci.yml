@@ -8,7 +8,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         include:
-          - os: windows-latest
+          - os: ubuntu-latest
             install-lib: sudo apt-get install --quiet -y libpcre2-dev
           - os: macos-latest
             install-lib: brew install pcre2

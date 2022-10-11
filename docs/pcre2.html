@@ -120,20 +120,19 @@ fn main() {
 <p>For more examples see inside the <a href="https://github.com/srackham/pcre2/tree/master/examples">examples directory</a> and take a look at the <a href="https://github.com/srackham/pcre2/blob/master/pcre2_test.v">module tests</a>.</p>
 <h2>Dependencies</h2>
 <p>Install the PCRE2 library:</p>
-<p><strong>Arch Linux</strong>: <code>pacman -S pcre2</code></p>
+<p><strong>Arch Linux and Manjaro</strong>: <code>pacman -S pcre2</code></p>
 <p><strong>Debian</strong>: <code>apt install libpcre2-dev</code></p>
 <p><strong>Fedora</strong>: <code>yum install pcre2-devel</code></p>
 <p><strong>macOS</strong>: <code>brew install pcre2</code></p>
+<p><strong>Windows</strong> †: <code>pacman.exe -S mingw-w64-x86_64-pcre2</code></p>
+<p>† This example is using the Windows <a href="https://www.msys2.org/">MSYS2</a> package management tools.</p>
 <h2>Installation</h2>
 <pre><code>v install --git https://github.com/srackham/pcre2
 </code></pre>
 <p>Test the installation by running:</p>
 <pre><code>v test $HOME/.vmodules/pcre2
 </code></pre>
-<h2>To Do</h2>
-<ul>
-<li>Windows 10.</li>
-</ul>
+<p>Example installation and test workflows for Ubuntu, macOS and Windows can be found in the Github Actions <a href="https://github.com/srackham/pcre2/blob/master/.github/workflows/ci.yml">workflow file</a>.</p>
 
 </section>
 
@@ -250,7 +249,7 @@ If no match is found an error is returned.</p>
 </section>
 
           <div class="footer">
-            Powered by vdoc. Generated on: 10 Oct 2022 15:25:32
+            Powered by vdoc. Generated on: 11 Oct 2022 21:49:24
           </div>
         </div>
         

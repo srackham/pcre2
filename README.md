@@ -42,13 +42,17 @@ For more examples see inside the [examples directory](https://github.com/srackha
 ## Dependencies
 Install the PCRE2 library:
 
-**Arch Linux**: `pacman -S pcre2`
+**Arch Linux and Manjaro**: `pacman -S pcre2`
 
 **Debian**: `apt install libpcre2-dev`
 
 **Fedora**: `yum install pcre2-devel`
 
 **macOS**: `brew install pcre2`
+
+**Windows** †: `pacman.exe -S mingw-w64-x86_64-pcre2`
+
+† This example is using the Windows [MSYS2](https://www.msys2.org/) package management tools.
 
 ## Installation
 
@@ -58,5 +62,4 @@ Test the installation by running:
 
     v test $HOME/.vmodules/pcre2
 
-## To Do
-- Windows 10.
+Example installation and test workflows for Ubuntu, macOS and Windows can be found in the Github Actions [workflow file](https://github.com/srackham/pcre2/blob/master/.github/workflows/ci.yml).

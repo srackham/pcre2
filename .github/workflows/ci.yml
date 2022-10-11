@@ -45,8 +45,8 @@ jobs:
 
       - name: Build example with -prod
         # Can't use -cstrict (see https://github.com/vlang/v/issues/16016)
-        #run: v -cc gcc -cstrict -prod pcre2/examples/pcre2-example-1.v
-        run: v -cc gcc -prod pcre2/examples/pcre2-example-1.v
+        #run: v -cc gcc -cstrict -prod $HOME/.vmodules/pcre2/examples/pcre2-example-1.v
+        run: v -cc gcc -prod $HOME/.vmodules/pcre2/examples/pcre2-example-1.v
 
   test-windows:
     runs-on: windows-latest

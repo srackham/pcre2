@@ -31,8 +31,8 @@ pub fn compile(pattern string) ?Regex {
 	r := C.pcre2_compile(pattern.str, pattern.len, 0, &error_code, &error_offset, 0)
 	if isnil(r) {
 		buffer := []u8{len: 256}
-		C.pcre2_get_error_message(error_code, &buffer[0], buffer.len)
-		err_msg := unsafe { cstring_to_vstring(&char(&buffer[0])) }
+		C.pcre2_get_error_message(error_code, buffer.data, buffer.len)
+		err_msg := unsafe { cstring_to_vstring(buffer.data) }
 		return error('PCRE2 compilation failed at offset $error_offset: $err_msg')
 	}
 	mut capture_count := 0

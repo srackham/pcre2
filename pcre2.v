@@ -248,3 +248,11 @@ fn (r &Regex) substitute(subject string, pos int, repl string, options int) ?str
 	// TODO vstring_with_len does not make a copy, is this safe to return?
 	return unsafe { byteptr(outbuffer.data).vstring_with_len(int(outlen)) }
 }
+
+pub fn (r &Regex) replace_all_extended(subject string, repl string) ?string {
+	return r.substitute(subject, 0, repl, C.PCRE2_SUBSTITUTE_EXTENDED | C.PCRE2_SUBSTITUTE_GLOBAL)
+}
+
+pub fn (r &Regex) replace_first_extended(subject string, repl string) ?string {
+	return r.substitute(subject, 0, repl, C.PCRE2_SUBSTITUTE_EXTENDED)
+}

@@ -57,7 +57,22 @@ fn test_substitute() {
 	} else {
 		assert err.msg() == 'PCRE2 replacement failed at offset 1: invalid replacement string'
 	}
+}
 
+fn test_extended() {
+	mut r := compile(r'baz')?
+	mut subject := 'baz baz'
+	mut s := r.replace_all_extended(subject, 'foo')?
+	assert s == 'foo foo'
+	s = r.replace_first_extended(subject, 'foo')?
+	assert s == 'foo baz'
+
+	r = must_compile(r'\b([dn].*?)\b')
+	subject = 'Lorem nisi dis diam a cras placerat natoque'
+	s = r.replace_all_extended(subject, r'\U$1')?
+	assert s == 'Lorem NISI DIS DIAM a cras placerat NATOQUE'
+	s = r.replace_first_extended(subject, r'\U$1')?
+	assert s == 'Lorem NISI dis diam a cras placerat natoque'
 }
 
 fn test_find_match() {

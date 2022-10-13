@@ -1,5 +1,7 @@
 module pcre2
 
+import strings
+
 fn test_compile() {
 	mut r := compile(r'foo')?
 	defer {
@@ -28,6 +30,34 @@ fn test_must_compile() {
 fn test_escape_meta() {
 	assert escape_meta(r'\.+*?()|[]{}^$') == r'\\\.\+\*\?\(\)\|\[\]\{\}\^\$'
 	assert escape_meta(r'(🚀)') == r'\(🚀\)'
+}
+
+fn test_substitute() {
+	mut r := compile(r'baz')?
+	mut s := r.substitute('', 0, 'foo', 0)?
+	assert s == ''
+
+	s = r.substitute('baz bar', 0, 'foo', 0)?
+	assert s == 'foo bar'
+
+	s = r.substitute('foobar', 0, 'foo', 0)?
+	assert s == 'foobar'
+
+	s = r.substitute('baz baz', 0, 'foo', 0)?
+	assert s == 'foo baz'
+
+	s = r.substitute('baz baz', 0, 'foo', C.PCRE2_SUBSTITUTE_GLOBAL)?
+	assert s == 'foo foo'
+
+	s = r.substitute(strings.repeat_string('foo', 1024) + 'baz', 0, 'foo', 0)?
+	assert s == strings.repeat_string('foo', 1025)
+
+	if _ := r.substitute('baz bar', 0, '$', 0) {
+		assert false, 'should have returned an error'
+	} else {
+		assert err.msg() == 'PCRE2 replacement failed at offset 1: invalid replacement string'
+	}
+
 }
 
 fn test_find_match() {

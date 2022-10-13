@@ -215,3 +215,36 @@ fn replace_matches(subject string, matches []string) string {
 		}
 	}, -1)
 }
+
+// `substitute` is a wrapper for the PCRE2 `pcre2_substitute` API.
+// It returns a copy of the `subject` string in which matches of the regular expression after index `pos` are replaced by the `repl` string.
+// `options` is passed to the PCRE2 `pcre2_substitute` API.
+// By default only the first match is replaced, use the `C.PCRE2_SUBSTITUTE_GLOBAL` option to replace all matches.
+// If no matches are found the unmodified `subject` is returned.
+fn (r &Regex) substitute(subject string, pos int, repl string, options int) ?string {
+	mut outbuffer := []u8{len: 1024}
+	outlen := usize(outbuffer.len)
+	mut count := C.pcre2_substitute(r.re, subject.str, subject.len, pos, C.PCRE2_SUBSTITUTE_OVERFLOW_LENGTH | options,
+		0, 0, repl.str, repl.len, outbuffer.data, &outlen)
+	if count == C.PCRE2_ERROR_NOMEMORY {
+		outbuffer = []u8{len: int(outlen)} // Resize the output buffer
+		count = C.pcre2_substitute(r.re, subject.str, subject.len, pos, C.PCRE2_SUBSTITUTE_OVERFLOW_LENGTH | options,
+			0, 0, repl.str, repl.len, outbuffer.data, &outlen)
+	}
+	if count < 0 {
+		buffer := []u8{len: 256}
+		C.pcre2_get_error_message(count, buffer.data, buffer.len)
+		err_msg := unsafe { cstring_to_vstring(buffer.data) }
+		if outlen == usize(C.PCRE2_UNSET) {
+			// TODO are the PCRE2 error messages locale dependent?
+			return error('PCRE2 replacement failed: $err_msg')
+		} else {
+			return error('PCRE2 replacement failed at offset $outlen: $err_msg')
+		}
+	}
+	if count == 0 {
+		return subject
+	}
+	// TODO vstring_with_len does not make a copy, is this safe to return?
+	return unsafe { byteptr(outbuffer.data).vstring_with_len(int(outlen)) }
+}

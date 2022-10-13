@@ -19,6 +19,9 @@ struct C.pcre2_code {}
 struct C.pcre2_match_data {}
 
 [typedef]
+struct C.pcre2_match_context {}
+
+[typedef]
 struct C.pcre2_compile_context {}
 
 fn C.pcre2_code_free(code &C.pcre2_code)
@@ -29,3 +32,4 @@ fn C.pcre2_match(code &C.pcre2_code, subject &u8, length usize, startoffset usiz
 fn C.pcre2_match_data_create_from_pattern(code &C.pcre2_code, gcontext &pcre2_general_context) &C.pcre2_match_data
 fn C.pcre2_match_data_free(match_data &C.pcre2_match_data)
 fn C.pcre2_pattern_info(code &C.pcre2_code, what u32, where voidptr) int
+fn C.pcre2_substitute(code &C.pcre2_code, subject &u8, length usize, startoffset usize, options i32, match_data &C.pcre2_match_data, mcontext &C.pcre2_match_context, replacement &u8, rlength usize, outputbuffer &u8, outlengthptr &usize) int

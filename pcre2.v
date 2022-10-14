@@ -95,7 +95,7 @@ pub fn (r &Regex) find_match(subject string, pos int) ?MatchData {
 // `find` returns an array containing matched strings from the `subject` string.
 // * If `n >= 0`, then at most `n` matches are returned; otherwise, all matches are returned.
 // Example: assert must_compile(r'\d').find('1 abc 9 de 5 g', -1) == ['1', '9', '5']
-pub fn (r &Regex) find(subject string, n int) []string {
+fn (r &Regex) find(subject string, n int) []string {
 	mut res := []string{}
 	mut pos := 0
 	for n < 0 || res.len != n {
@@ -104,6 +104,23 @@ pub fn (r &Regex) find(subject string, n int) []string {
 		pos = m.ovector[1]
 	}
 	return res
+}
+
+// `find` returns an array containing matched strings from the `subject` string.
+// Example: assert must_compile(r'\d').find_all('1 abc 9 de 5 g') == ['1', '9', '5']
+pub fn (r &Regex) find_all(subject string) []string {
+	return r.find(subject, -1)
+}
+
+// `find_first` returns the first matched string from the `subject` string.
+// If not match is found an error is returned.
+// Example: assert must_compile(r'\d').find_first('1 abc 9 de 5 g') == '1'
+pub fn (r &Regex) find_first(subject string) ?string {
+	matches := r.find(subject, -1)
+	if matches.len == 0 {
+		return error('pcre2: find_first: no match found')
+	}
+	return matches[0]
 }
 
 // `has_match` return `true` if the `subject` string contains a match for the regular expression; if no then `false` is returned.

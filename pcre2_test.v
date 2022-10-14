@@ -124,7 +124,7 @@ fn test_get_and_get_all() {
 	assert m.get_all() == ['z', '', 'z']
 }
 
-fn test_matches() {
+fn test_has_match() {
 	mut r := compile(r'foo')?
 	assert !r.has_match('')
 	assert !r.has_match('bar')
@@ -183,13 +183,20 @@ fn test_replace_submatches_fn() {
 fn test_find() {
 	mut r := must_compile(r'\d')
 	assert r.find('abcdeg', -1) == []
+	if _ := r.find_first('abcdeg') {
+		assert false, 'should have returned an error'
+	} else {
+		assert err.msg() == 'pcre2: find_first: no match found'
+	}
 	assert r.find('abcde5g', -1) == ['5']
 	assert r.find('1 abc 9 de 5 g', -1) == ['1', '9', '5']
+	assert r.find_all('1 abc 9 de 5 g') == ['1', '9', '5']
 	assert r.find('1 abc 9 de 5 g', -1)[0] == '1'
 	assert r.find('1 abc 9 de 5 g', -1)[1] == '9'
 	assert r.find('1 abc 9 de 5 g', -1)[2] == '5'
 	assert r.find('1 abc 9 de 5 g', 0) == []
 	assert r.find('1 abc 9 de 5 g', 1) == ['1']
+	assert r.find_first('1 abc 9 de 5 g')? == '1'
 	assert r.find('1 abc 9 de 5 g', 2) == ['1', '9']
 	assert r.find('1 abc 9 de 5 g', 3) == ['1', '9', '5']
 	assert r.find('1 abc 9 de 5 g', 4) == ['1', '9', '5']

@@ -126,16 +126,16 @@ fn test_get_and_get_all() {
 
 fn test_matches() {
 	mut r := compile(r'foo')?
-	assert !r.matches('')
-	assert !r.matches('bar')
-	assert r.matches('foo')
-	assert r.matches('baz foo')
+	assert !r.has_match('')
+	assert !r.has_match('bar')
+	assert r.has_match('foo')
+	assert r.has_match('baz foo')
 
 	r = compile(r'x|(y)|(z)')?
-	assert !r.matches('u')
-	assert r.matches('x')
-	assert r.matches('y')
-	assert r.matches('z')
+	assert !r.has_match('u')
+	assert r.has_match('x')
+	assert r.has_match('y')
+	assert r.has_match('z')
 }
 
 fn test_replace_submatches_fn() {

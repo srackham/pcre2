@@ -106,8 +106,8 @@ pub fn (r &Regex) find(subject string, n int) []string {
 	return res
 }
 
-// `matches` return `true` if the `subject` string contains a match for the regular expression; if no then `false` is returned.
-pub fn (r &Regex) matches(subject string) bool {
+// `has_match` return `true` if the `subject` string contains a match for the regular expression; if no then `false` is returned.
+pub fn (r &Regex) has_match(subject string) bool {
 	if _ := r.find_match(subject, 0) {
 		return true
 	} else {

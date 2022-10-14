@@ -35,6 +35,10 @@ fn main() {
 		return m.to_upper()
 	})
 	println(s2) // 'Lorem NISI DIS DIAM a cras placerat NATOQUE'
+
+	// Replace all matched strings with upper case (PCRE2 extended replacement syntax).
+	s3 := r.replace_all_extended(subject, r'\U$1')?
+	println(s3) // 'Lorem NISI DIS DIAM a cras placerat NATOQUE'
 }
 ```
 For more examples see inside the [examples directory](https://github.com/srackham/pcre2/tree/master/examples) and take a look at the [module tests](https://github.com/srackham/pcre2/blob/master/pcre2_test.v).

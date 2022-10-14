@@ -33,7 +33,7 @@ pub fn compile(pattern string) ?Regex {
 		buffer := []u8{len: 256}
 		C.pcre2_get_error_message(error_code, buffer.data, buffer.len)
 		err_msg := unsafe { cstring_to_vstring(buffer.data) }
-		return error('PCRE2 compilation failed at offset $error_offset: $err_msg')
+		return error('pcre2 compilation failed at offset $error_offset: $err_msg')
 	}
 	mut capture_count := 0
 	error_code = C.pcre2_pattern_info(r, C.PCRE2_INFO_CAPTURECOUNT, &capture_count)
@@ -116,7 +116,7 @@ pub fn (r &Regex) find_all(subject string) []string {
 // If not match is found an error is returned.
 // Example: assert must_compile(r'\d').find_one('1 abc 9 de 5 g') == '1'
 pub fn (r &Regex) find_one(subject string) ?string {
-	matches := r.find_n(subject, -1)
+	matches := r.find_n(subject, 1)
 	if matches.len == 0 {
 		return error('pcre2: find_one: no match found')
 	}
@@ -294,9 +294,9 @@ fn (r &Regex) substitute(subject string, pos int, repl string, options int) ?str
 		C.pcre2_get_error_message(count, buffer.data, buffer.len)
 		err_msg := unsafe { cstring_to_vstring(buffer.data) }
 		if outlen == usize(C.PCRE2_UNSET) {
-			return error('PCRE2 replacement failed: $err_msg')
+			return error('pcre2 replacement failed: $err_msg')
 		} else {
-			return error('PCRE2 replacement failed at offset $outlen: $err_msg')
+			return error('pcre2 replacement failed at offset $outlen: $err_msg')
 		}
 	}
 	if count == 0 {

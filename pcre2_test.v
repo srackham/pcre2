@@ -18,7 +18,7 @@ fn test_compile() {
 	if _ := compile(r'\') {
 		assert false, 'should have returned an error'
 	} else {
-		assert err.msg() == 'PCRE2 compilation failed at offset 1: \\ at end of pattern'
+		assert err.msg() == 'pcre2 compilation failed at offset 1: \\ at end of pattern'
 	}
 }
 
@@ -55,7 +55,7 @@ fn test_substitute() {
 	if _ := r.substitute('baz bar', 0, '$', 0) {
 		assert false, 'should have returned an error'
 	} else {
-		assert err.msg() == 'PCRE2 replacement failed at offset 1: invalid replacement string'
+		assert err.msg() == 'pcre2 replacement failed at offset 1: invalid replacement string'
 	}
 }
 

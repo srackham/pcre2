@@ -64,14 +64,14 @@ fn test_extended() {
 	mut subject := 'baz baz'
 	mut s := r.replace_all_extended(subject, 'foo')?
 	assert s == 'foo foo'
-	s = r.replace_first_extended(subject, 'foo')?
+	s = r.replace_one_extended(subject, 'foo')?
 	assert s == 'foo baz'
 
 	r = must_compile(r'\b([dn].*?)\b')
 	subject = 'Lorem nisi dis diam a cras placerat natoque'
 	s = r.replace_all_extended(subject, r'\U$1')?
 	assert s == 'Lorem NISI DIS DIAM a cras placerat NATOQUE'
-	s = r.replace_first_extended(subject, r'\U$1')?
+	s = r.replace_one_extended(subject, r'\U$1')?
 	assert s == 'Lorem NISI dis diam a cras placerat natoque'
 }
 
@@ -141,87 +141,87 @@ fn test_has_match() {
 fn test_replace_submatches_fn() {
 	mut r := must_compile(r'x')
 
-	assert r.replace_submatches_fn('', fn (m []string) string {
+	assert r.replace_n_submatches_fn('', fn (m []string) string {
 		return m[0] + 'yz'
 	}, -1) == ''
 
-	assert r.replace_submatches_fn('x', fn (_ []string) string {
+	assert r.replace_n_submatches_fn('x', fn (_ []string) string {
 		return 'foo✅'
 	}, -1) == 'foo✅'
 
-	assert r.replace_submatches_fn('y', fn (_ []string) string {
+	assert r.replace_n_submatches_fn('y', fn (_ []string) string {
 		return 'foo'
 	}, -1) == 'y'
 
-	assert r.replace_submatches_fn('xz', fn (m []string) string {
+	assert r.replace_n_submatches_fn('xz', fn (m []string) string {
 		return m[0] + 'y'
 	}, -1) == 'xyz'
 
 	r = must_compile(r'(([a-z]+)(\d+))')
-	assert r.replace_submatches_fn('456 xyz123', fn (m []string) string {
+	assert r.replace_n_submatches_fn('456 xyz123', fn (m []string) string {
 		return '${m[2]} ${m[3]} ${m[1]}'
 	}, -1) == '456 xyz 123 xyz123'
 
-	assert r.replace_submatches_fn('xyz123 ab98', fn (m []string) string {
+	assert r.replace_n_submatches_fn('xyz123 ab98', fn (m []string) string {
 		return '${m[1]} ${m[3]} ${m[2]}'
 	}, -1) == 'xyz123 123 xyz ab98 98 ab'
 
 	r = must_compile(r'x|(y)|(z)')
-	assert r.replace_submatches_fn('x', fn (m []string) string {
+	assert r.replace_n_submatches_fn('x', fn (m []string) string {
 		return '${m[1]}'
 	}, -1) == ''
 
-	assert r.replace_submatches_fn('y', fn (m []string) string {
+	assert r.replace_n_submatches_fn('y', fn (m []string) string {
 		return '${m[1]}'
 	}, -1) == 'y'
 
-	assert r.replace_submatches_fn('z', fn (m []string) string {
+	assert r.replace_n_submatches_fn('z', fn (m []string) string {
 		return '${m[2]}'
 	}, -1) == 'z'
 }
 
 fn test_find() {
 	mut r := must_compile(r'\d')
-	assert r.find('abcdeg', -1) == []
-	if _ := r.find_first('abcdeg') {
+	assert r.find_n('abcdeg', -1) == []
+	if _ := r.find_one('abcdeg') {
 		assert false, 'should have returned an error'
 	} else {
-		assert err.msg() == 'pcre2: find_first: no match found'
+		assert err.msg() == 'pcre2: find_one: no match found'
 	}
-	assert r.find('abcde5g', -1) == ['5']
-	assert r.find('1 abc 9 de 5 g', -1) == ['1', '9', '5']
+	assert r.find_n('abcde5g', -1) == ['5']
+	assert r.find_n('1 abc 9 de 5 g', -1) == ['1', '9', '5']
 	assert r.find_all('1 abc 9 de 5 g') == ['1', '9', '5']
-	assert r.find('1 abc 9 de 5 g', -1)[0] == '1'
-	assert r.find('1 abc 9 de 5 g', -1)[1] == '9'
-	assert r.find('1 abc 9 de 5 g', -1)[2] == '5'
-	assert r.find('1 abc 9 de 5 g', 0) == []
-	assert r.find('1 abc 9 de 5 g', 1) == ['1']
-	assert r.find_first('1 abc 9 de 5 g')? == '1'
-	assert r.find('1 abc 9 de 5 g', 2) == ['1', '9']
-	assert r.find('1 abc 9 de 5 g', 3) == ['1', '9', '5']
-	assert r.find('1 abc 9 de 5 g', 4) == ['1', '9', '5']
-	assert must_compile(r'\d').find('1 abc 9 de 5 g', -1) == ['1', '9', '5']
+	assert r.find_n('1 abc 9 de 5 g', -1)[0] == '1'
+	assert r.find_n('1 abc 9 de 5 g', -1)[1] == '9'
+	assert r.find_n('1 abc 9 de 5 g', -1)[2] == '5'
+	assert r.find_n('1 abc 9 de 5 g', 0) == []
+	assert r.find_n('1 abc 9 de 5 g', 1) == ['1']
+	assert r.find_one('1 abc 9 de 5 g')? == '1'
+	assert r.find_n('1 abc 9 de 5 g', 2) == ['1', '9']
+	assert r.find_n('1 abc 9 de 5 g', 3) == ['1', '9', '5']
+	assert r.find_n('1 abc 9 de 5 g', 4) == ['1', '9', '5']
+	assert must_compile(r'\d').find_n('1 abc 9 de 5 g', -1) == ['1', '9', '5']
 }
 
 fn test_replace_fn() {
 	mut r := must_compile(r'(x|y|z)')
-	assert r.replace_fn('z yx', fn (m string) string {
+	assert r.replace_n_fn('z yx', fn (m string) string {
 		return '<$m>'
 	}, -1) == '<z> <y><x>'
 }
 
 fn test_replace() {
 	mut r := must_compile(r'(x|y|z)')
-	assert r.replace('z y x', '"$1"', -1) == '"z" "y" "x"'
-	assert r.replace('z y x', '"$1"', 0) == 'z y x'
-	assert r.replace('z y x', '"$1"', 1) == '"z" y x'
-	assert r.replace('z y x', '"$1"', 2) == '"z" "y" x'
-	assert r.replace('z y x', '"$1"', 3) == '"z" "y" "x"'
-	assert r.replace('z y x', '"$1"', 4) == '"z" "y" "x"'
+	assert r.replace_n('z y x', '"$1"', -1) == '"z" "y" "x"'
+	assert r.replace_n('z y x', '"$1"', 0) == 'z y x'
+	assert r.replace_n('z y x', '"$1"', 1) == '"z" y x'
+	assert r.replace_n('z y x', '"$1"', 2) == '"z" "y" x'
+	assert r.replace_n('z y x', '"$1"', 3) == '"z" "y" "x"'
+	assert r.replace_n('z y x', '"$1"', 4) == '"z" "y" "x"'
 	r = must_compile(r'x|(y)|(z)')
-	assert r.replace('z yx', '$$$1 $2$$', -1) == '$ z$ \$y $$ $'
+	assert r.replace_n('z yx', '$$$1 $2$$', -1) == '$ z$ \$y $$ $'
 	r = must_compile(r'✅')
-	assert r.replace('✅ ✅✅', '🚀', 2) == '🚀 🚀✅'
+	assert r.replace_n('✅ ✅✅', '🚀', 2) == '🚀 🚀✅'
 }
 
 fn test_replace_matches() {

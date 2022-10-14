@@ -93,9 +93,9 @@ pub fn (r &Regex) find_match(subject string, pos int) ?MatchData {
 	}
 }
 
-// `find_one` returns an array containing matched strings from the `subject` string.
+// `find_n` returns an array containing matched strings from the `subject` string.
 // * If `n >= 0`, then at most `n` matches are returned; otherwise, all matches are returned.
-// Example: assert must_compile(r'\d').find_one('1 abc 9 de 5 g', -1) == ['1', '9', '5']
+// Example: assert must_compile(r'\d').find_n('1 abc 9 de 5 g', -1) == ['1', '9', '5']
 fn (r &Regex) find_n(subject string, n int) []string {
 	mut res := []string{}
 	mut pos := 0
@@ -107,7 +107,7 @@ fn (r &Regex) find_n(subject string, n int) []string {
 	return res
 }
 
-// `find_one` returns an array containing matched strings from the `subject` string.
+// `find_all` returns an array containing all matched strings from the `subject` string.
 // Example: assert must_compile(r'\d').find_all('1 abc 9 de 5 g') == ['1', '9', '5']
 pub fn (r &Regex) find_all(subject string) []string {
 	return r.find_n(subject, -1)
@@ -208,11 +208,11 @@ pub fn (r &Regex) replace_all_submatches_fn(subject string, repl fn (matches []s
 // `replace_one_submatches_fn` returns a copy of the `subject` string with the first regular expression match replaced by the return value of the `repl` callback function.
 // * The `repl` function is passed a `matches` array containing the matched text (`matches[0]`) and any submatches (`matches[1..]`).
 // * If a subpattern is not matched the corresponding `matches` element is set to ''.
-pub fn (r &Regex) replace_one_submatches_fn(subject string, repl fn (matches []string) string) string {
+fn (r &Regex) replace_one_submatches_fn(subject string, repl fn (matches []string) string) string {
 	return r.replace_n_submatches_fn(subject, repl, 1)
 }
 
-// `replace_one_fn` returns a copy of the `subject` string with regular expression matches replaced by the return value of the `repl` callback function.
+// `replace_n_fn` returns a copy of the `subject` string with regular expression matches replaced by the return value of the `repl` callback function.
 // * The `repl` function is passed a string containing the matched text.
 // * If `n >= 0`, then at most `n` matches are replaced; otherwise, all matches are replaced.
 fn (r &Regex) replace_n_fn(subject string, repl fn (string) string, n int) string {
@@ -229,11 +229,11 @@ pub fn (r &Regex) replace_all_fn(subject string, repl fn (string) string) string
 
 // `replace_one_fn` returns a copy of the `subject` string with the first regular expression match replaced by the return value of the `repl` callback function.
 // * The `repl` function is passed a string containing the matched text.
-pub fn (r &Regex) replace_one_fn(subject string, repl fn (string) string) string {
+fn (r &Regex) replace_one_fn(subject string, repl fn (string) string) string {
 	return r.replace_n_fn(subject, repl, 1)
 }
 
-// `replace_one` returns a copy of the `subject` string in which matches of the regular expression are replaced by the `repl` string.
+// `replace_n` returns a copy of the `subject` string in which matches of the regular expression are replaced by the `repl` string.
 // * `$0`...`$99` in the `repl` string are replaced by matching text; the number zero refers to the entire matched substring; higher numbers refer to substrings captured by parenthesized subpatterns e.g. `$1` refers to the first submatch.
 // * References to undefined subpatterns are not replaced.
 // * Subpatterns that did not participate in the match replaced with ''.
@@ -256,7 +256,7 @@ pub fn (r &Regex) replace_all(subject string, repl string) string {
 
 // `replace_one` returns a copy of the `subject` string in with the first match of the regular expression replaced by the `repl` string.
 // In all other respects behaves like the `replace_all` method.
-pub fn (r &Regex) replace_one(subject string, repl string) string {
+fn (r &Regex) replace_one(subject string, repl string) string {
 	return r.replace_n(subject, repl, 1)
 }
 
@@ -316,6 +316,6 @@ pub fn (r &Regex) replace_all_extended(subject string, repl string) ?string {
 
 // `replace_one_extended` returns a copy of the `subject` string with the first match of the regular expression replaced by the `repl` string.
 // The `repl` string supports the PCRE2 extended replacements string syntax.
-pub fn (r &Regex) replace_one_extended(subject string, repl string) ?string {
+fn (r &Regex) replace_one_extended(subject string, repl string) ?string {
 	return r.substitute(subject, 0, repl, C.PCRE2_SUBSTITUTE_EXTENDED)
 }

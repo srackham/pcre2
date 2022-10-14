@@ -33,7 +33,6 @@ pub fn compile(pattern string) ?Regex {
 		buffer := []u8{len: 256}
 		C.pcre2_get_error_message(error_code, buffer.data, buffer.len)
 		err_msg := unsafe { cstring_to_vstring(buffer.data) }
-		// TODO vstring_with_len does not make a copy, is this safe to return?
 		return error('PCRE2 compilation failed at offset $error_offset: $err_msg')
 	}
 	mut capture_count := 0
@@ -295,7 +294,6 @@ fn (r &Regex) substitute(subject string, pos int, repl string, options int) ?str
 		C.pcre2_get_error_message(count, buffer.data, buffer.len)
 		err_msg := unsafe { cstring_to_vstring(buffer.data) }
 		if outlen == usize(C.PCRE2_UNSET) {
-			// TODO are the PCRE2 error messages locale dependent?
 			return error('PCRE2 replacement failed: $err_msg')
 		} else {
 			return error('PCRE2 replacement failed at offset $outlen: $err_msg')
@@ -304,8 +302,7 @@ fn (r &Regex) substitute(subject string, pos int, repl string, options int) ?str
 	if count == 0 {
 		return subject
 	}
-	// TODO vstring_with_len does not make a copy, is this safe to return?
-	return unsafe { byteptr(outbuffer.data).vstring_with_len(int(outlen)) }
+	return (unsafe { byteptr(outbuffer.data).vstring_with_len(int(outlen)) }).clone()
 }
 
 // `replace_all_extended` returns a copy of the `subject` string with all matches of the regular expression replaced by the `repl` string.

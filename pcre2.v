@@ -147,7 +147,7 @@ pub fn escape_meta(s string) string {
 }
 
 // `get` returns captured match and submatch strings by `number`. The number zero refers to the entire match, with numbers 1.. referring to parenthesized subpatterns.
-// * Returns '' if the subpattern was not captured.
+// * Returns '' if the subpattern did not participate in the match.
 // * Returns an error if `number` is less than zero or greater than the total number of subpatterns.
 pub fn (m MatchData) get(number int) ?string {
 	if number < 0 || number >= m.ovector.len / 2 {
@@ -164,7 +164,7 @@ pub fn (m MatchData) get(number int) ?string {
 // `get_all` returns an array containing match an submatch strings:
 // * The first element (at index 0) contains the the entire matched text.
 // * Subsequent elements (indexes 1..) contain corresponding matched subpatterns
-// * If a subpattern is not matched the corresponding array element is set to ''.
+// * If a subpattern did not participate in the match the corresponding array element is set to ''.
 pub fn (m MatchData) get_all() []string {
 	match_count := m.ovector.len / 2
 	mut matches := []string{len: match_count}
@@ -176,7 +176,7 @@ pub fn (m MatchData) get_all() []string {
 
 // `replace_n_submatches_fn` returns a copy of the `subject` string with regular expression matches replaced by the return value of the `repl` callback function.
 // * The `repl` function is passed a `matches` array containing the matched text (`matches[0]`) and any submatches (`matches[1..]`).
-// * If a subpattern is not matched the corresponding `matches` element is set to ''.
+// * If a subpattern did not participate in the match the corresponding `matches` element is set to ''.
 // * If `n >= 0`, then at most `n` matches are replaced; otherwise, all matches are replaced.
 fn (r &Regex) replace_n_submatches_fn(subject string, repl fn (matches []string) string, n int) string {
 	mut b := strings.new_builder(1000)
@@ -199,14 +199,14 @@ fn (r &Regex) replace_n_submatches_fn(subject string, repl fn (matches []string)
 
 // `replace_all_submatches_fn` returns a copy of the `subject` string with all regular expression matches replaced by the return value of the `repl` callback function.
 // * The `repl` function is passed a `matches` array containing the matched text (`matches[0]`) and any submatches (`matches[1..]`).
-// * If a subpattern is not matched the corresponding `matches` element is set to ''.
+// * If a subpattern did not participate in the match the corresponding `matches` element is set to ''.
 pub fn (r &Regex) replace_all_submatches_fn(subject string, repl fn (matches []string) string) string {
 	return r.replace_n_submatches_fn(subject, repl, -1)
 }
 
 // `replace_one_submatches_fn` returns a copy of the `subject` string with the first regular expression match replaced by the return value of the `repl` callback function.
 // * The `repl` function is passed a `matches` array containing the matched text (`matches[0]`) and any submatches (`matches[1..]`).
-// * If a subpattern is not matched the corresponding `matches` element is set to ''.
+// * If a subpattern did not participate in the match the corresponding `matches` element is set to ''.
 fn (r &Regex) replace_one_submatches_fn(subject string, repl fn (matches []string) string) string {
 	return r.replace_n_submatches_fn(subject, repl, 1)
 }
@@ -306,13 +306,13 @@ fn (r &Regex) substitute(subject string, pos int, repl string, options int) ?str
 }
 
 // `replace_all_extended` returns a copy of the `subject` string with all matches of the regular expression replaced by the `repl` string.
-// The `repl` string supports the PCRE2 extended replacements string syntax.
+// The `repl` string supports the PCRE2 extended replacements string syntax (see `PCRE2_SUBSTITUTE_EXTENDED` in the [pcre2api](https://www.pcre.org/current/doc/html/pcre2api.html) man page).
 pub fn (r &Regex) replace_all_extended(subject string, repl string) ?string {
 	return r.substitute(subject, 0, repl, C.PCRE2_SUBSTITUTE_EXTENDED | C.PCRE2_SUBSTITUTE_GLOBAL)
 }
 
 // `replace_one_extended` returns a copy of the `subject` string with the first match of the regular expression replaced by the `repl` string.
-// The `repl` string supports the PCRE2 extended replacements string syntax.
+// The `repl` string supports the PCRE2 extended replacements string syntax (see `PCRE2_SUBSTITUTE_EXTENDED` in the [pcre2api](https://www.pcre.org/current/doc/html/pcre2api.html) man page).
 fn (r &Regex) replace_one_extended(subject string, repl string) ?string {
 	return r.substitute(subject, 0, repl, C.PCRE2_SUBSTITUTE_EXTENDED)
 }

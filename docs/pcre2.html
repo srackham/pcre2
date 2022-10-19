@@ -84,9 +84,14 @@
         <div class="doc-content">
           						<section id="readme_pcre2" class="doc-node">
 							<div class="title"><h1> pcre2 <a href="#readme_pcre2">#</a></h1></div><h1>pcre2</h1>
+<h2>Overview</h2>
 <p>A V library module for processing <a href="https://en.wikipedia.org/wiki/Perl_Compatible_Regular_Expressions">Perl Compatible Regular Expressions (PCRE)</a> using the <a href="https://www.pcre.org/">PCRE2 library</a>.</p>
 <ul>
-<li>The <code>pcre2</code> module is a thin wrapper for the PCRE2 8-bit runtime library.</li>
+<li>The <code>pcre2</code> module is a wrapper for the PCRE2 8-bit runtime library.</li>
+<li>Regex <code>find_*</code> methods search a <code>subject</code> string for regular expression matches.</li>
+<li>Regex <code>replace_*</code> methods return a string in which matches in the <code>subject</code>
+string are replaced by a replacement string or the result of a replacement function.</li>
+<li>The Regex <code>replace_*_extended</code> methods support the PCRE2 extended replacements string syntax (see <code>PCRE2_SUBSTITUTE_EXTENDED</code> in the <a href="https://www.pcre.org/current/doc/html/pcre2api.html">pcre2api</a> man page).</li>
 <li>Currently there are no extraction methods for named subpatterns.</li>
 <li>The <a href="https://github.com/vlang/pcre">pcre module</a> (which uses the older PCRE library) was the leading light for this project.</li>
 <li>Many of the methods and functions were inspired by the <a href="https://pkg.go.dev/regexp">Go regex package</a>.</li>
@@ -129,7 +134,7 @@ fn main() {
 <h2>Dependencies</h2>
 <p>Install the PCRE2 library:</p>
 <p><strong>Arch Linux and Manjaro</strong>: <code>pacman -S pcre2</code></p>
-<p><strong>Debian</strong>: <code>apt install libpcre2-dev</code></p>
+<p><strong>Debian and Ubuntu</strong>: <code>apt install libpcre2-dev</code></p>
 <p><strong>Fedora</strong>: <code>yum install pcre2-devel</code></p>
 <p><strong>macOS</strong>: <code>brew install pcre2</code></p>
 <p><strong>Windows</strong> †: <code>pacman.exe -S mingw-w64-x86_64-pcre2</code></p>
@@ -287,7 +292,7 @@ The <code>repl</code> string supports the PCRE2 extended replacements string syn
 </section>
 
           <div class="footer">
-            Powered by vdoc. Generated on: 19 Oct 2022 14:14:32
+            Powered by vdoc. Generated on: 19 Oct 2022 15:33:11
           </div>
         </div>
         

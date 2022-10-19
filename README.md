@@ -1,8 +1,13 @@
 # pcre2
 
+## Overview
 A V library module for processing [Perl Compatible Regular Expressions (PCRE)](https://en.wikipedia.org/wiki/Perl_Compatible_Regular_Expressions) using the [PCRE2 library](https://www.pcre.org/).
 
-- The `pcre2` module is a thin wrapper for the PCRE2 8-bit runtime library.
+- The `pcre2` module is a wrapper for the PCRE2 8-bit runtime library.
+- Regex `find_*` methods search a `subject` string for regular expression matches.
+- Regex `replace_*` methods return a string in which matches in the `subject`
+  string are replaced by a replacement string or the result of a replacement function.
+- The Regex `replace_*_extended` methods support the PCRE2 extended replacements string syntax (see `PCRE2_SUBSTITUTE_EXTENDED` in the [pcre2api](https://www.pcre.org/current/doc/html/pcre2api.html) man page).
 - Currently there are no extraction methods for named subpatterns.
 - The [pcre module](https://github.com/vlang/pcre) (which uses the older PCRE library) was the leading light for this project.
 - Many of the methods and functions were inspired by the [Go regex package](https://pkg.go.dev/regexp).
@@ -48,7 +53,7 @@ Install the PCRE2 library:
 
 **Arch Linux and Manjaro**: `pacman -S pcre2`
 
-**Debian**: `apt install libpcre2-dev`
+**Debian and Ubuntu**: `apt install libpcre2-dev`
 
 **Fedora**: `yum install pcre2-devel`
 

@@ -163,64 +163,64 @@ fn test_find_index() {
 		[5, 9, 6, 9, -1, -1, 6, 9]]
 }
 
-fn test_find_submatches() {
+fn test_find_submatch() {
 	mut r := must_compile(r'x([yz])')
-	assert r.find_n_submatches('', 1).len == 0
-	assert r.find_n_submatches('an xyz', 1) == [['xy', 'y']]
-	assert r.find_n_submatches('an xyz', 2) == [['xy', 'y']]
-	assert r.find_n_submatches('an xy and xz', 2) == [['xy', 'y'],
+	assert r.find_n_submatch('', 1).len == 0
+	assert r.find_n_submatch('an xyz', 1) == [['xy', 'y']]
+	assert r.find_n_submatch('an xyz', 2) == [['xy', 'y']]
+	assert r.find_n_submatch('an xy and xz', 2) == [['xy', 'y'],
 		['xz', 'z']]
 
-	assert r.find_all_submatches('an xy') == [['xy', 'y']]
-	assert r.find_all_submatches('an xy and xz') == [['xy', 'y'],
+	assert r.find_all_submatch('an xy') == [['xy', 'y']]
+	assert r.find_all_submatch('an xy and xz') == [['xy', 'y'],
 		['xz', 'z']]
 
-	if _ := r.find_one_submatches('') {
+	if _ := r.find_one_submatch('') {
 		assert false, 'should have returned an error'
 	} else {
 		assert err.msg() == 'no match'
 	}
-	assert r.find_one_submatches('an xy and xz')? == ['xy', 'y']
+	assert r.find_one_submatch('an xy and xz')? == ['xy', 'y']
 }
 
-fn test_replace_submatches_fn() {
+fn test_replace_submatch_fn() {
 	mut r := must_compile(r'x')
 
-	assert r.replace_n_submatches_fn('', fn (m []string) string {
+	assert r.replace_n_submatch_fn('', fn (m []string) string {
 		return m[0] + 'yz'
 	}, -1) == ''
 
-	assert r.replace_n_submatches_fn('x', fn (_ []string) string {
+	assert r.replace_n_submatch_fn('x', fn (_ []string) string {
 		return 'foo✅'
 	}, -1) == 'foo✅'
 
-	assert r.replace_n_submatches_fn('y', fn (_ []string) string {
+	assert r.replace_n_submatch_fn('y', fn (_ []string) string {
 		return 'foo'
 	}, -1) == 'y'
 
-	assert r.replace_n_submatches_fn('xz', fn (m []string) string {
+	assert r.replace_n_submatch_fn('xz', fn (m []string) string {
 		return m[0] + 'y'
 	}, -1) == 'xyz'
 
 	r = must_compile(r'(([a-z]+)(\d+))')
-	assert r.replace_n_submatches_fn('456 xyz123', fn (m []string) string {
+	assert r.replace_n_submatch_fn('456 xyz123', fn (m []string) string {
 		return '${m[2]} ${m[3]} ${m[1]}'
 	}, -1) == '456 xyz 123 xyz123'
 
-	assert r.replace_n_submatches_fn('xyz123 ab98', fn (m []string) string {
+	assert r.replace_n_submatch_fn('xyz123 ab98', fn (m []string) string {
 		return '${m[1]} ${m[3]} ${m[2]}'
 	}, -1) == 'xyz123 123 xyz ab98 98 ab'
 
 	r = must_compile(r'x|(y)|(z)')
-	assert r.replace_n_submatches_fn('x', fn (m []string) string {
+	assert r.replace_n_submatch_fn('x', fn (m []string) string {
 		return '${m[1]}'
 	}, -1) == ''
 
-	assert r.replace_n_submatches_fn('y', fn (m []string) string {
+	assert r.replace_n_submatch_fn('y', fn (m []string) string {
 		return '${m[1]}'
 	}, -1) == 'y'
 
-	assert r.replace_n_submatches_fn('z', fn (m []string) string {
+	assert r.replace_n_submatch_fn('z', fn (m []string) string {
 		return '${m[2]}'
 	}, -1) == 'z'
 }

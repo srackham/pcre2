@@ -7,6 +7,7 @@ A V library module for processing [Perl Compatible Regular Expressions (PCRE)](h
 - Regex `find_*` methods search a `subject` string for regular expression matches.
 - Regex `replace_*` methods return a string in which matches in the `subject`
   string are replaced by a replacement string or the result of a replacement function.
+- Regex `*_all_*` methods process all matches; `*_one_*` methods process the first match.
 - The Regex `replace_*_extended` methods support the PCRE2 extended replacements string syntax (see `PCRE2_SUBSTITUTE_EXTENDED` in the [pcre2api](https://www.pcre.org/current/doc/html/pcre2api.html) man page).
 - Currently there are no extraction methods for named subpatterns.
 - The [pcre module](https://github.com/vlang/pcre) (which uses the older PCRE library) was the leading light for this project.

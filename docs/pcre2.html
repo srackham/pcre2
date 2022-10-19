@@ -59,20 +59,20 @@
 <li class="open"><a href="#Regex.free">type Regex</a>        <ul>
 <li><a href="#Regex.free">fn free</a></li>
 <li><a href="#Regex.has_match">fn has_match</a></li>
-<li><a href="#Regex.find_match">fn find_match</a></li>
+<li><a href="#Regex.find_all_index">fn find_all_index</a></li>
+<li><a href="#Regex.find_one_index">fn find_one_index</a></li>
 <li><a href="#Regex.find_all">fn find_all</a></li>
 <li><a href="#Regex.find_one">fn find_one</a></li>
-<li><a href="#Regex.find_all_submatches">fn find_all_submatches</a></li>
-<li><a href="#Regex.find_one_submatches">fn find_one_submatches</a></li>
+<li><a href="#Regex.find_all_submatch">fn find_all_submatch</a></li>
+<li><a href="#Regex.find_one_submatch">fn find_one_submatch</a></li>
 <li><a href="#Regex.replace_all">fn replace_all</a></li>
+<li><a href="#Regex.replace_one">fn replace_one</a></li>
 <li><a href="#Regex.replace_all_fn">fn replace_all_fn</a></li>
-<li><a href="#Regex.replace_all_submatches_fn">fn replace_all_submatches_fn</a></li>
+<li><a href="#Regex.replace_one_fn">fn replace_one_fn</a></li>
+<li><a href="#Regex.replace_all_submatch_fn">fn replace_all_submatch_fn</a></li>
+<li><a href="#Regex.replace_one_submatch_fn">fn replace_one_submatch_fn</a></li>
 <li><a href="#Regex.replace_all_extended">fn replace_all_extended</a></li>
-</ul>
-</li>
-<li class="open"><a href="#MatchData">struct MatchData</a>        <ul>
-<li><a href="#MatchData.get">fn get</a></li>
-<li><a href="#MatchData.get_all">fn get_all</a></li>
+<li><a href="#Regex.replace_one_extended">fn replace_one_extended</a></li>
 </ul>
 </li>
 
@@ -91,6 +91,7 @@
 <li>Regex <code>find_*</code> methods search a <code>subject</code> string for regular expression matches.</li>
 <li>Regex <code>replace_*</code> methods return a string in which matches in the <code>subject</code>
 string are replaced by a replacement string or the result of a replacement function.</li>
+<li>Regex <code>*_all_*</code> methods process all matches; <code>*_one_*</code> methods process the first match.</li>
 <li>The Regex <code>replace_*_extended</code> methods support the PCRE2 extended replacements string syntax (see <code>PCRE2_SUBSTITUTE_EXTENDED</code> in the <a href="https://www.pcre.org/current/doc/html/pcre2api.html">pcre2api</a> man page).</li>
 <li>Currently there are no extraction methods for named subpatterns.</li>
 <li>The <a href="https://github.com/vlang/pcre">pcre module</a> (which uses the older PCRE library) was the leading light for this project.</li>
@@ -178,10 +179,14 @@ If V's <code>-autofree</code> option is enabled V's autofree engine calls <code>
 <p><code>has_match</code> return <code>true</code> if the <code>subject</code> string contains a match for the regular expression; if no then <code>false</code> is returned.</p>
 
 </section>
-						<section id="Regex.find_match" class="doc-node">
-							<div class="title"><h2>fn (Regex) find_match <a href="#Regex.find_match">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">find_match</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">,</span> pos <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token operator">?</span>MatchData</code></pre>
-<p><code>find_match</code> searches the <code>subject</code> string starting at index <code>pos</code> and returns a <code>MatchData</code> struct.<br>
-If no match is found an error is returned.</p>
+						<section id="Regex.find_all_index" class="doc-node">
+							<div class="title"><h2>fn (Regex) find_all_index <a href="#Regex.find_all_index">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">find_all_index</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span></code></pre>
+<p><code>find_all_index</code> returns an array of <code>MatchData.ovector</code> values, one from each match in the <code>subject</code> string.</p>
+
+</section>
+						<section id="Regex.find_one_index" class="doc-node">
+							<div class="title"><h2>fn (Regex) find_one_index <a href="#Regex.find_one_index">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">find_one_index</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span></code></pre>
+<p><code>find_all_index</code> returns the <code>MatchData.ovector</code> array from the first match in the <code>subject</code> string.</p>
 
 </section>
 						<section id="Regex.find_all" class="doc-node">
@@ -201,9 +206,9 @@ If a match is not found an error is returned.</p>
 <pre><code class="language-v"><span class="token keyword">assert</span> <span class="token function">must_compile</span><span class="token punctuation">(</span>r<span class="token string">'\d'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">find_one</span><span class="token punctuation">(</span><span class="token string">'1 abc 9 de 5 g'</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token string">'1'</span></code></pre>
 </section>
 </section>
-						<section id="Regex.find_all_submatches" class="doc-node">
-							<div class="title"><h2>fn (Regex) find_all_submatches <a href="#Regex.find_all_submatches">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">find_all_submatches</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span></code></pre>
-<p><code>find_all_submatches</code> searchs the <code>subject</code> string for all regular expression matches and returns an array containing match and submatches text.</p>
+						<section id="Regex.find_all_submatch" class="doc-node">
+							<div class="title"><h2>fn (Regex) find_all_submatch <a href="#Regex.find_all_submatch">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">find_all_submatch</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span></code></pre>
+<p><code>find_all_submatch</code> searchs the <code>subject</code> string for all regular expression matches and returns an array containing match and submatches text.</p>
 <ul>
 <li>Each match contributes an element to the result array.</li>
 <li>Each result array element is an array containing the matched text (at index 0) plus any submatches (at indexes 1..).</li>
@@ -211,9 +216,9 @@ If a match is not found an error is returned.</p>
 </ul>
 
 </section>
-						<section id="Regex.find_one_submatches" class="doc-node">
-							<div class="title"><h2>fn (Regex) find_one_submatches <a href="#Regex.find_one_submatches">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">find_one_submatches</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span></code></pre>
-<p><code>find_one_submatches</code> searchs the <code>subject</code> string for the first regular expression match and returns an array containing match and submatches text.</p>
+						<section id="Regex.find_one_submatch" class="doc-node">
+							<div class="title"><h2>fn (Regex) find_one_submatch <a href="#Regex.find_one_submatch">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">find_one_submatch</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span></code></pre>
+<p><code>find_one_submatch</code> searchs the <code>subject</code> string for the first regular expression match and returns an array containing match and submatches text.</p>
 <ul>
 <li>The first element (at index 0) contains the the entire matched text.</li>
 <li>Subsequent elements (indexes 1..) contain corresponding matched subpatterns</li>
@@ -233,6 +238,12 @@ If a match is not found an error is returned.</p>
 </ul>
 
 </section>
+						<section id="Regex.replace_one" class="doc-node">
+							<div class="title"><h2>fn (Regex) replace_one <a href="#Regex.replace_one">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">replace_one</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">,</span> repl <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token builtin">string</span></code></pre>
+<p><code>replace_one</code> returns a copy of the <code>subject</code> string in with the first match of the regular expression replaced by the <code>repl</code> string.<br>
+In all other respects behaves like the <code>replace_all</code> method.</p>
+
+</section>
 						<section id="Regex.replace_all_fn" class="doc-node">
 							<div class="title"><h2>fn (Regex) replace_all_fn <a href="#Regex.replace_all_fn">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">replace_all_fn</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">,</span> repl <span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token builtin">string</span></code></pre>
 <p><code>replace_all_fn</code> returns a copy of the <code>subject</code> string with all regular expression matches replaced by the return value of the <code>repl</code> callback function.</p>
@@ -241,9 +252,26 @@ If a match is not found an error is returned.</p>
 </ul>
 
 </section>
-						<section id="Regex.replace_all_submatches_fn" class="doc-node">
-							<div class="title"><h2>fn (Regex) replace_all_submatches_fn <a href="#Regex.replace_all_submatches_fn">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">replace_all_submatches_fn</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">,</span> repl <span class="token keyword">fn</span> <span class="token punctuation">(</span>matches <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token builtin">string</span></code></pre>
-<p><code>replace_all_submatches_fn</code> returns a copy of the <code>subject</code> string with all regular expression matches replaced by the return value of the <code>repl</code> callback function.</p>
+						<section id="Regex.replace_one_fn" class="doc-node">
+							<div class="title"><h2>fn (Regex) replace_one_fn <a href="#Regex.replace_one_fn">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">replace_one_fn</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">,</span> repl <span class="token keyword">fn</span> <span class="token punctuation">(</span><span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token builtin">string</span></code></pre>
+<p><code>replace_one_fn</code> returns a copy of the <code>subject</code> string with the first regular expression match replaced by the return value of the <code>repl</code> callback function.</p>
+<ul>
+<li>The <code>repl</code> function is passed a string containing the matched text.</li>
+</ul>
+
+</section>
+						<section id="Regex.replace_all_submatch_fn" class="doc-node">
+							<div class="title"><h2>fn (Regex) replace_all_submatch_fn <a href="#Regex.replace_all_submatch_fn">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">replace_all_submatch_fn</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">,</span> repl <span class="token keyword">fn</span> <span class="token punctuation">(</span>matches <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token builtin">string</span></code></pre>
+<p><code>replace_all_submatch_fn</code> returns a copy of the <code>subject</code> string with all regular expression matches replaced by the return value of the <code>repl</code> callback function.</p>
+<ul>
+<li>The <code>repl</code> function is passed a <code>matches</code> array containing the matched text (<code>matches[0]</code>) and any submatches (<code>matches[1..]</code>).</li>
+<li>If a subpattern did not participate in the match the corresponding <code>matches</code> element is set to ''.</li>
+</ul>
+
+</section>
+						<section id="Regex.replace_one_submatch_fn" class="doc-node">
+							<div class="title"><h2>fn (Regex) replace_one_submatch_fn <a href="#Regex.replace_one_submatch_fn">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">replace_one_submatch_fn</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">,</span> repl <span class="token keyword">fn</span> <span class="token punctuation">(</span>matches <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token builtin">string</span></code></pre>
+<p><code>replace_one_submatch_fn</code> returns a copy of the <code>subject</code> string with the first regular expression match replaced by the return value of the <code>repl</code> callback function.</p>
 <ul>
 <li>The <code>repl</code> function is passed a <code>matches</code> array containing the matched text (<code>matches[0]</code>) and any submatches (<code>matches[1..]</code>).</li>
 <li>If a subpattern did not participate in the match the corresponding <code>matches</code> element is set to ''.</li>
@@ -256,43 +284,15 @@ If a match is not found an error is returned.</p>
 The <code>repl</code> string supports the PCRE2 extended replacements string syntax (see <code>PCRE2_SUBSTITUTE_EXTENDED</code> in the <a href="https://www.pcre.org/current/doc/html/pcre2api.html">pcre2api</a> man page).</p>
 
 </section>
-						<section id="MatchData" class="doc-node">
-							<div class="title"><h2>struct MatchData <a href="#MatchData">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">MatchData</span> <span class="token punctuation">{</span>
-	subject <span class="token builtin">string</span>
-	ovector <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span>
-<span class="token punctuation">}</span></code></pre>
-<p><code>MatchData</code> an struct containing match results; it is returned by the <code>Regex.find_match</code> method.</p>
-<ul>
-<li><code>subject</code> is the searched string.</li>
-<li><code>ovector</code> is an array of start/end index pairs specifying the byte offsets of the match and submatches in the <code>subject</code> string.<br>
-<code>ovector[0]</code> and <code>ovector[1]</code> are the start and end indexes of the entire match.<br>
-<code>ovector[2*N]</code> and <code>ovector[2*N+1]</code> are the start and end indexes of the Nth submatch</li>
-<li>If a subpattern did not participate in the match the start and end indexes will be <code>-1</code>.</li>
-</ul>
-
-</section>
-						<section id="MatchData.get" class="doc-node">
-							<div class="title"><h2>fn (MatchData) get <a href="#MatchData.get">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>m MatchData<span class="token punctuation">)</span> <span class="token function">get</span><span class="token punctuation">(</span>number <span class="token builtin">int</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token builtin">string</span></code></pre>
-<p><code>get</code> returns captured match and submatch strings by <code>number</code>. The number zero refers to the entire match, with numbers 1.. referring to parenthesized subpatterns.</p>
-<ul>
-<li>Returns '' if the subpattern did not participate in the match.</li>
-<li>Returns an error if <code>number</code> is less than zero or greater than the total number of subpatterns.</li>
-</ul>
-
-</section>
-						<section id="MatchData.get_all" class="doc-node">
-							<div class="title"><h2>fn (MatchData) get_all <a href="#MatchData.get_all">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>m MatchData<span class="token punctuation">)</span> <span class="token function">get_all</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span></code></pre>
-<p><code>get_all</code> returns an array containing match an submatch strings:</p>
-<ul>
-<li>The first element (at index 0) contains the the entire matched text.</li>
-<li>Subsequent elements (indexes 1..) contain corresponding matched subpatterns</li>
-<li>If a subpattern did not participate in the match the corresponding array element is set to ''.</li>
-</ul>
+						<section id="Regex.replace_one_extended" class="doc-node">
+							<div class="title"><h2>fn (Regex) replace_one_extended <a href="#Regex.replace_one_extended">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">replace_one_extended</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">,</span> repl <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token builtin">string</span></code></pre>
+<p><code>replace_one_extended</code> returns a copy of the <code>subject</code> string with the first match of the regular expression replaced by the <code>repl</code> string.<br>
+The <code>repl</code> string supports the PCRE2 extended replacements string syntax (see <code>PCRE2_SUBSTITUTE_EXTENDED</code> in the <a href="https://www.pcre.org/current/doc/html/pcre2api.html">pcre2api</a> man page).</p>
 
 </section>
 
           <div class="footer">
-            Powered by vdoc. Generated on: 19 Oct 2022 15:33:11
+            Powered by vdoc. Generated on: 20 Oct 2022 11:03:34
           </div>
         </div>
         

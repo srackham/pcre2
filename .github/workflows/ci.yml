@@ -41,7 +41,6 @@ jobs:
       - name: Run examples
         run: |
           v -cstrict run $HOME/.vmodules/pcre2/examples/pcre2-example-1.v
-          v -cstrict run $HOME/.vmodules/pcre2/examples/pcre2-example-2.v
 
       - name: Build example with -prod
         # Can't use -cstrict (see https://github.com/vlang/v/issues/16016)
@@ -88,4 +87,3 @@ jobs:
       - name: Run examples
         run: |
           .\v\v.exe run %USERPROFILE%/.vmodules/pcre2/examples/pcre2-example-1.v
-          .\v\v.exe run %USERPROFILE%/.vmodules/pcre2/examples/pcre2-example-2.v

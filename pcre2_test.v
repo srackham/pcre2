@@ -181,6 +181,18 @@ fn test_find_submatch() {
 		assert err.msg() == 'no match'
 	}
 	assert r.find_one_submatch('an xy and xz')? == ['xy', 'y']
+
+	r = must_compile('(.*?)((foo)+)')
+	mut submatches := []string{}
+	for subject in ['My name is foo', 'Mine is foofoo', 'Mine is baz'] {
+		if m := r.find_one_submatch(subject) {
+			submatches << m
+		} else {
+			submatches << 'No match'
+		}
+	}
+	assert submatches == ['My name is foo', 'My name is ', 'foo', 'foo', 'Mine is foofoo', 'Mine is ',
+		'foofoo', 'foo', 'No match']
 }
 
 fn test_replace_submatch_fn() {

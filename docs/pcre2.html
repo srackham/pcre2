@@ -181,12 +181,18 @@ If V's <code>-autofree</code> option is enabled V's autofree engine calls <code>
 </section>
 						<section id="Regex.find_all_index" class="doc-node">
 							<div class="title"><h2>fn (Regex) find_all_index <a href="#Regex.find_all_index">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">find_all_index</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span></code></pre>
-<p><code>find_all_index</code> returns an array of <code>MatchData.ovector</code> values, one from each match in the <code>subject</code> string.</p>
+<p><code>find_all_index</code> searches <code>subject</code> for all matches and returns an array; each element of the array is an array of byte indexes identifying the match and submatches within the <code>subject</code> (see <code>find_one_index</code> for details).</p>
 
 </section>
 						<section id="Regex.find_one_index" class="doc-node">
 							<div class="title"><h2>fn (Regex) find_one_index <a href="#Regex.find_one_index">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">find_one_index</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span></code></pre>
-<p><code>find_all_index</code> returns the <code>MatchData.ovector</code> array from the first match in the <code>subject</code> string.</p>
+<p><code>find_one_index</code> searches <code>subject</code> for the first match and returns an array of <code>subject</code> byte indexes identifying the match and submatches.</p>
+<ul>
+<li><code>result[0]..result[1]</code> is the entire match.</li>
+<li><code>result[2*N..2*N+2]</code> is the Nth submatch.</li>
+<li>If a subpattern did not participate in the match its indexes will be <code>-1</code>.</li>
+<li>If no match is found an error is returned.</li>
+</ul>
 
 </section>
 						<section id="Regex.find_all" class="doc-node">
@@ -292,7 +298,7 @@ The <code>repl</code> string supports the PCRE2 extended replacements string syn
 </section>
 
           <div class="footer">
-            Powered by vdoc. Generated on: 20 Oct 2022 11:03:34
+            Powered by vdoc. Generated on: 20 Oct 2022 11:42:35
           </div>
         </div>
         

@@ -154,12 +154,16 @@ fn (r &Regex) find_n_index(subject string, n int) [][]int {
 	return res
 }
 
-// `find_all_index` returns an array of `MatchData.ovector` values, one from each match in the `subject` string.
+// `find_all_index` searches `subject` for all matches and returns an array; each element of the array is an array of byte indexes identifying the match and submatches within the `subject` (see `find_one_index` for details).
 pub fn (r &Regex) find_all_index(subject string) [][]int {
 	return r.find_n_index(subject, -1)
 }
 
-// `find_all_index` returns the `MatchData.ovector` array from the first match in the `subject` string.
+// `find_one_index` searches `subject` for the first match and returns an array of `subject` byte indexes identifying the match and submatches.
+// * `result[0]..result[1]` is the entire match.
+// * `result[2*N..2*N+2]` is the Nth submatch.
+// * If a subpattern did not participate in the match its indexes will be `-1`.
+// * If no match is found an error is returned.
 pub fn (r &Regex) find_one_index(subject string) ?[]int {
 	m := r.find_n_index(subject, 1)
 	if m.len == 0 {

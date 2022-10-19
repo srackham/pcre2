@@ -138,9 +138,33 @@ fn test_has_match() {
 	assert r.has_match('z')
 }
 
-fn test_find_submatches_fn() {
+fn test_find_index() {
 	mut r := must_compile(r'x([yz])')
-	// mut subject := 'an xy and xz'
+	assert r.find_n_index('', 1).len == 0
+	assert r.find_n_index('an xyz', 1) == [[3, 5, 4, 5]]
+	assert r.find_n_index('an xyz', 2) == [[3, 5, 4, 5]]
+	assert r.find_n_index('an xy and xz', 2) == [[3, 5, 4, 5],
+		[10, 12, 11, 12]]
+
+	assert r.find_all_index('an xy') == [[3, 5, 4, 5]]
+	assert r.find_all_index('an xy and xz') == [[3, 5, 4, 5],
+		[10, 12, 11, 12]]
+
+	if _ := r.find_one_index('') {
+		assert false, 'should have returned an error'
+	} else {
+		assert err.msg() == 'no match'
+	}
+	assert r.find_one_index('an xy and xz')? == [3, 5, 4, 5]
+
+	r = must_compile(r'x((\d+)|(\w+))')
+	assert r.find_one_index('x123 xABC')? == [0, 4, 1, 4, 1, 4, -1, -1]
+	assert r.find_all_index('x123 xABC') == [[0, 4, 1, 4, 1, 4, -1, -1],
+		[5, 9, 6, 9, -1, -1, 6, 9]]
+}
+
+fn test_find_submatches() {
+	mut r := must_compile(r'x([yz])')
 	assert r.find_n_submatches('', 1).len == 0
 	assert r.find_n_submatches('an xyz', 1) == [['xy', 'y']]
 	assert r.find_n_submatches('an xyz', 2) == [['xy', 'y']]

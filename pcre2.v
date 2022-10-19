@@ -101,6 +101,33 @@ pub fn (r &Regex) find_match(subject string, pos int) ?MatchData {
 	}
 }
 
+// `find_n_index` returns an array of `MatchData.ovector` values from the first `n` matches in the `subject` string.
+// * If `n >= 0`, then at most `n` matched indexes are returned; otherwise, all matched indexes are returned.
+fn (r &Regex) find_n_index(subject string, n int) [][]int {
+	mut res := [][]int{cap: 10}
+	mut res_ptr := &res
+	// Iterate matches and append to result.
+	_ := r.replace_n_matchdata_fn(subject, fn [mut res_ptr] (m MatchData) string {
+		(*res_ptr).insert((*res_ptr).len, m.ovector) // Append matched text and submatches to result.
+		return '' // Dummy return.
+	}, n)
+	return res
+}
+
+// `find_all_index` returns an array of `MatchData.ovector` values, one from each match in the `subject` string.
+pub fn (r &Regex) find_all_index(subject string) [][]int {
+	return r.find_n_index(subject, -1)
+}
+
+// `find_all_index` returns the `MatchData.ovector` array from the first match in the `subject` string.
+pub fn (r &Regex) find_one_index(subject string) ?[]int {
+	m := r.find_n_index(subject, 1)
+	if m.len == 0 {
+		return error('no match')
+	}
+	return m[0]
+}
+
 // `find_n` returns an array containing matched strings from the `subject` string.
 // * If `n >= 0`, then at most `n` matches are returned; otherwise, all matches are returned.
 // Example: assert must_compile(r'\d').find_n('1 abc 9 de 5 g', -1) == ['1', '9', '5']
@@ -162,11 +189,11 @@ pub fn (r &Regex) find_all_submatches(subject string) [][]string {
 // * If a subpattern did not participate in the match the corresponding array element is set to ''.
 // * If a match is not found an error is returned.
 pub fn (r &Regex) find_one_submatches(subject string) ?[]string {
-	matches := r.find_n_submatches(subject, 1)
-	if matches.len == 0 {
+	m := r.find_n_submatches(subject, 1)
+	if m.len == 0 {
 		return error('no match')
 	}
-	return matches[0]
+	return m[0]
 }
 
 // `escape_meta` returns a string that escapes all regular expression metacharacters inside the argument text. The returned string is a regular expression matching the literal text.
@@ -259,18 +286,17 @@ fn (r &Regex) replace_one_fn(subject string, repl fn (string) string) string {
 	return r.replace_n_fn(subject, repl, 1)
 }
 
-// `replace_n_submatches_fn` returns a copy of the `subject` string with regular expression matches replaced by the return value of the `repl` callback function.
-// * The `repl` function is passed a `matches` array containing the matched text (`matches[0]`) and any submatches (`matches[1..]`).
-// * If a subpattern did not participate in the match the corresponding `matches` element is set to ''.
+// `replace_n_matchdata_fn` returns a copy of the `subject` string with regular expression matches replaced by the return value of the `repl` callback function.
+// * The `repl` function is passed the `MatchData` struct resulting from the match.
 // * If `n >= 0`, then at most `n` matches are replaced; otherwise, all matches are replaced.
-fn (r &Regex) replace_n_submatches_fn(subject string, repl fn (matches []string) string, n int) string {
+fn (r &Regex) replace_n_matchdata_fn(subject string, repl fn (matchdata MatchData) string, n int) string {
 	mut b := strings.new_builder(1000)
 	mut pos := 0
 	mut count := 0
 	for count < n || n < 0 {
 		mut m := r.find_match(subject, pos) or { break }
 		b.write_string(subject[pos..m.ovector[0]])
-		b.write_string(repl(m.get_all()))
+		b.write_string(repl(m))
 		pos = m.ovector[1]
 		count++
 	}
@@ -280,6 +306,16 @@ fn (r &Regex) replace_n_submatches_fn(subject string, repl fn (matches []string)
 		b.write_string(subject[pos..])
 	}
 	return b.str()
+}
+
+// `replace_n_submatches_fn` returns a copy of the `subject` string with regular expression matches replaced by the return value of the `repl` callback function.
+// * The `repl` function is passed a `matches` array containing the matched text (`matches[0]`) and any submatches (`matches[1..]`).
+// * If a subpattern did not participate in the match the corresponding `matches` element is set to ''.
+// * If `n >= 0`, then at most `n` matches are replaced; otherwise, all matches are replaced.
+fn (r &Regex) replace_n_submatches_fn(subject string, repl fn (matches []string) string, n int) string {
+	return r.replace_n_matchdata_fn(subject, fn [repl] (m MatchData) string {
+		return repl(m.get_all())
+	}, n)
 }
 
 // `replace_all_submatches_fn` returns a copy of the `subject` string with all regular expression matches replaced by the return value of the `repl` callback function.

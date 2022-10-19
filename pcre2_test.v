@@ -18,7 +18,7 @@ fn test_compile() {
 	if _ := compile(r'\') {
 		assert false, 'should have returned an error'
 	} else {
-		assert err.msg() == 'pcre2 compilation failed at offset 1: \\ at end of pattern'
+		assert err.msg() == 'compilation failed at offset 1: \\ at end of pattern'
 	}
 }
 
@@ -55,7 +55,7 @@ fn test_substitute() {
 	if _ := r.substitute('baz bar', 0, '$', 0) {
 		assert false, 'should have returned an error'
 	} else {
-		assert err.msg() == 'pcre2 replacement failed at offset 1: invalid replacement string'
+		assert err.msg() == 'replacement failed at offset 1: invalid replacement string'
 	}
 }
 
@@ -138,6 +138,27 @@ fn test_has_match() {
 	assert r.has_match('z')
 }
 
+fn test_find_submatches_fn() {
+	mut r := must_compile(r'x([yz])')
+	// mut subject := 'an xy and xz'
+	assert r.find_n_submatches('', 1).len == 0
+	assert r.find_n_submatches('an xyz', 1) == [['xy', 'y']]
+	assert r.find_n_submatches('an xyz', 2) == [['xy', 'y']]
+	assert r.find_n_submatches('an xy and xz', 2) == [['xy', 'y'],
+		['xz', 'z']]
+
+	assert r.find_all_submatches('an xy') == [['xy', 'y']]
+	assert r.find_all_submatches('an xy and xz') == [['xy', 'y'],
+		['xz', 'z']]
+
+	if _ := r.find_one_submatches('') {
+		assert false, 'should have returned an error'
+	} else {
+		assert err.msg() == 'no match'
+	}
+	assert r.find_one_submatches('an xy and xz')? == ['xy', 'y']
+}
+
 fn test_replace_submatches_fn() {
 	mut r := must_compile(r'x')
 
@@ -186,7 +207,7 @@ fn test_find() {
 	if _ := r.find_one('abcdeg') {
 		assert false, 'should have returned an error'
 	} else {
-		assert err.msg() == 'pcre2: find_one: no match found'
+		assert err.msg() == 'no match'
 	}
 	assert r.find_n('abcde5g', -1) == ['5']
 	assert r.find_n('1 abc 9 de 5 g', -1) == ['1', '9', '5']

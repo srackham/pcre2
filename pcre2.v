@@ -105,13 +105,13 @@ pub fn (r &Regex) find_match(subject string, pos int) ?MatchData {
 // * If `n >= 0`, then at most `n` matches are returned; otherwise, all matches are returned.
 // Example: assert must_compile(r'\d').find_n('1 abc 9 de 5 g', -1) == ['1', '9', '5']
 fn (r &Regex) find_n(subject string, n int) []string {
-	mut res := []string{}
-	mut pos := 0
-	for n < 0 || res.len != n {
-		mut m := r.find_match(subject, pos) or { break }
-		res << m.get(0) or { '' }
-		pos = m.ovector[1]
-	}
+	mut res := []string{cap: 10}
+	mut res_ptr := &res
+	// Iterate matches and append to result.
+	_ := r.replace_n_submatches_fn(subject, fn [mut res_ptr] (m []string) string {
+		(*res_ptr).insert((*res_ptr).len, m[0]) // Append matched text to result.
+		return '' // Dummy return.
+	}, n)
 	return res
 }
 
@@ -142,7 +142,7 @@ fn (r &Regex) find_n_submatches(subject string, n int) [][]string {
 	mut res_ptr := &res
 	// Iterate matches and append to result.
 	_ := r.replace_n_submatches_fn(subject, fn [mut res_ptr] (m []string) string {
-		(*res_ptr).insert((*res_ptr).len, m) // Append m to result.
+		(*res_ptr).insert((*res_ptr).len, m) // Append matched text and submatches to result.
 		return '' // Dummy return.
 	}, n)
 	return res

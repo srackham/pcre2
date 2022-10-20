@@ -59,10 +59,10 @@
 <li class="open"><a href="#Regex.free">type Regex</a>        <ul>
 <li><a href="#Regex.free">fn free</a></li>
 <li><a href="#Regex.has_match">fn has_match</a></li>
-<li><a href="#Regex.find_all_index">fn find_all_index</a></li>
-<li><a href="#Regex.find_one_index">fn find_one_index</a></li>
 <li><a href="#Regex.find_all">fn find_all</a></li>
 <li><a href="#Regex.find_one">fn find_one</a></li>
+<li><a href="#Regex.find_all_index">fn find_all_index</a></li>
+<li><a href="#Regex.find_one_index">fn find_one_index</a></li>
 <li><a href="#Regex.find_all_submatch">fn find_all_submatch</a></li>
 <li><a href="#Regex.find_one_submatch">fn find_one_submatch</a></li>
 <li><a href="#Regex.replace_all">fn replace_all</a></li>
@@ -180,22 +180,6 @@ If V's <code>-autofree</code> option is enabled V's autofree engine calls <code>
 <p><code>has_match</code> return <code>true</code> if the <code>subject</code> string contains a match for the regular expression; if no then <code>false</code> is returned.</p>
 
 </section>
-						<section id="Regex.find_all_index" class="doc-node">
-							<div class="title"><h2>fn (Regex) find_all_index <a href="#Regex.find_all_index">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">find_all_index</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span></code></pre>
-<p><code>find_all_index</code> searches <code>subject</code> for all matches and returns an array; each element of the array is an array of byte indexes identifying the match and submatches within the <code>subject</code> (see <code>find_one_index</code> for details).</p>
-
-</section>
-						<section id="Regex.find_one_index" class="doc-node">
-							<div class="title"><h2>fn (Regex) find_one_index <a href="#Regex.find_one_index">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">find_one_index</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span></code></pre>
-<p><code>find_one_index</code> searches <code>subject</code> for the first match and returns an array of <code>subject</code> byte indexes identifying the match and submatches.</p>
-<ul>
-<li><code>result[0]..result[1]</code> is the entire match.</li>
-<li><code>result[2*N..2*N+2]</code> is the Nth submatch (N = 1...).</li>
-<li>If a subpattern did not participate in the match its indexes will be <code>-1</code>.</li>
-<li>If no match is found an error is returned.</li>
-</ul>
-
-</section>
 						<section id="Regex.find_all" class="doc-node">
 							<div class="title"><h2>fn (Regex) find_all <a href="#Regex.find_all">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">find_all</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span></code></pre>
 <p><code>find_all</code> returns an array containing all matched strings from the <code>subject</code> string.</p>
@@ -212,6 +196,22 @@ If a match is not found an error is returned.</p>
 <section class="doc-node examples"><h4>Example</h4>
 <pre><code class="language-v"><span class="token keyword">assert</span> <span class="token function">must_compile</span><span class="token punctuation">(</span>r<span class="token string">'\d'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">find_one</span><span class="token punctuation">(</span><span class="token string">'1 abc 9 de 5 g'</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token string">'1'</span></code></pre>
 </section>
+</section>
+						<section id="Regex.find_all_index" class="doc-node">
+							<div class="title"><h2>fn (Regex) find_all_index <a href="#Regex.find_all_index">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">find_all_index</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span></code></pre>
+<p><code>find_all_index</code> searches <code>subject</code> for all matches and returns an array; each element of the array is an array of byte indexes identifying the match and submatches within the <code>subject</code> (see <code>find_one_index</code> for details).</p>
+
+</section>
+						<section id="Regex.find_one_index" class="doc-node">
+							<div class="title"><h2>fn (Regex) find_one_index <a href="#Regex.find_one_index">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">find_one_index</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int</span></code></pre>
+<p><code>find_one_index</code> searches <code>subject</code> for the first match and returns an array of <code>subject</code> byte indexes identifying the match and submatches.</p>
+<ul>
+<li><code>result[0]..result[1]</code> is the entire match.</li>
+<li><code>result[2*N..2*N+2]</code> is the Nth submatch (N = 1...).</li>
+<li>If a subpattern did not participate in the match its indexes will be <code>-1</code>.</li>
+<li>If no match is found an error is returned.</li>
+</ul>
+
 </section>
 						<section id="Regex.find_all_submatch" class="doc-node">
 							<div class="title"><h2>fn (Regex) find_all_submatch <a href="#Regex.find_all_submatch">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">find_all_submatch</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span></code></pre>
@@ -299,7 +299,7 @@ The <code>repl</code> string supports the PCRE2 extended replacements string syn
 </section>
 
           <div class="footer">
-            Powered by vdoc. Generated on: 20 Oct 2022 14:32:19
+            Powered by vdoc. Generated on: 20 Oct 2022 14:44:20
           </div>
         </div>
         

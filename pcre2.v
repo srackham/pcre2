@@ -2,11 +2,11 @@ module pcre2
 
 import strings
 
-// `Regex`is an opaque struct containing the regular expression state.
+// `Regex` contains the compiled regular expression.
 // * `pattern` is the regular expression pattern.
 // * `subpattern_count` is the number of capturing subpatterns.
 // * `re` is a pointer to the compiled PCRE2 regular expression.
-struct Regex {
+pub struct Regex {
 	pattern          string
 	subpattern_count int
 mut:

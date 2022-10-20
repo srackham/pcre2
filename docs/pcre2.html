@@ -56,7 +56,7 @@
 <li class="open"><a href="#must_compile">fn must_compile</a>        <ul>
 </ul>
 </li>
-<li class="open"><a href="#Regex.free">type Regex</a>        <ul>
+<li class="open"><a href="#Regex">struct Regex</a>        <ul>
 <li><a href="#Regex.free">fn free</a></li>
 <li><a href="#Regex.has_match">fn has_match</a></li>
 <li><a href="#Regex.find_all">fn find_all</a></li>
@@ -167,6 +167,21 @@ If the pattern fails to parse an error is returned.</p>
 						<section id="must_compile" class="doc-node">
 							<div class="title"><h2>fn must_compile <a href="#must_compile">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token function">must_compile</span><span class="token punctuation">(</span>pattern <span class="token builtin">string</span><span class="token punctuation">)</span> Regex</code></pre>
 <p><code>must_compile</code> is like <code>compile</code> but panics if the regex <code>pattern</code> cannot be parsed.</p>
+
+</section>
+						<section id="Regex" class="doc-node">
+							<div class="title"><h2>struct Regex <a href="#Regex">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">Regex</span> <span class="token punctuation">{</span>
+	pattern          <span class="token builtin">string</span>
+	subpattern_count <span class="token builtin">int</span>
+<span class="token keyword">mut</span><span class="token punctuation">:</span>
+	re <span class="token operator">&</span>C<span class="token punctuation">.</span>pcre2_code
+<span class="token punctuation">}</span></code></pre>
+<p><code>Regex</code> contains the compiled regular expression.</p>
+<ul>
+<li><code>pattern</code> is the regular expression pattern.</li>
+<li><code>subpattern_count</code> is the number of capturing subpatterns.</li>
+<li><code>re</code> is a pointer to the compiled PCRE2 regular expression.</li>
+</ul>
 
 </section>
 						<section id="Regex.free" class="doc-node">
@@ -299,7 +314,7 @@ The <code>repl</code> string supports the PCRE2 extended replacements string syn
 </section>
 
           <div class="footer">
-            Powered by vdoc. Generated on: 20 Oct 2022 14:44:20
+            Powered by vdoc. Generated on: 20 Oct 2022 21:33:07
           </div>
         </div>
         

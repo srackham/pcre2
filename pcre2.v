@@ -53,6 +53,7 @@ fn (m MatchData) get_all() []string {
 }
 
 // `compile` parses a regular expression `pattern` and returns the corresponding `Regexp` struct.
+// If the pattern fails to parse an error is returned.
 pub fn compile(pattern string) ?Regex {
 	mut error_code := int(0)
 	mut error_offset := usize(0)
@@ -161,7 +162,7 @@ pub fn (r &Regex) find_all_index(subject string) [][]int {
 
 // `find_one_index` searches `subject` for the first match and returns an array of `subject` byte indexes identifying the match and submatches.
 // * `result[0]..result[1]` is the entire match.
-// * `result[2*N..2*N+2]` is the Nth submatch.
+// * `result[2*N..2*N+2]` is the Nth submatch (N = 1...).
 // * If a subpattern did not participate in the match its indexes will be `-1`.
 // * If no match is found an error is returned.
 pub fn (r &Regex) find_one_index(subject string) ?[]int {
@@ -387,12 +388,14 @@ fn (r &Regex) substitute(subject string, pos int, repl string, options int) ?str
 
 // `replace_all_extended` returns a copy of the `subject` string with all matches of the regular expression replaced by the `repl` string.
 // The `repl` string supports the PCRE2 extended replacements string syntax (see `PCRE2_SUBSTITUTE_EXTENDED` in the [pcre2api](https://www.pcre.org/current/doc/html/pcre2api.html) man page).
-pub fn (r &Regex) replace_all_extended(subject string, repl string) ?string {
-	return r.substitute(subject, 0, repl, C.PCRE2_SUBSTITUTE_EXTENDED | C.PCRE2_SUBSTITUTE_GLOBAL)
+pub fn (r &Regex) replace_all_extended(subject string, repl string) string {
+	return r.substitute(subject, 0, repl, C.PCRE2_SUBSTITUTE_EXTENDED | C.PCRE2_SUBSTITUTE_GLOBAL) or {
+		subject
+	}
 }
 
 // `replace_one_extended` returns a copy of the `subject` string with the first match of the regular expression replaced by the `repl` string.
 // The `repl` string supports the PCRE2 extended replacements string syntax (see `PCRE2_SUBSTITUTE_EXTENDED` in the [pcre2api](https://www.pcre.org/current/doc/html/pcre2api.html) man page).
-pub fn (r &Regex) replace_one_extended(subject string, repl string) ?string {
-	return r.substitute(subject, 0, repl, C.PCRE2_SUBSTITUTE_EXTENDED)
+pub fn (r &Regex) replace_one_extended(subject string, repl string) string {
+	return r.substitute(subject, 0, repl, C.PCRE2_SUBSTITUTE_EXTENDED) or { subject }
 }

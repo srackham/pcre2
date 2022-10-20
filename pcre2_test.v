@@ -62,16 +62,21 @@ fn test_substitute() {
 fn test_extended() {
 	mut r := compile(r'baz')?
 	mut subject := 'baz baz'
-	mut s := r.replace_all_extended(subject, 'foo')?
+	mut s := r.replace_all_extended(subject, 'foo')
 	assert s == 'foo foo'
-	s = r.replace_one_extended(subject, 'foo')?
+	s = r.replace_one_extended(subject, 'foo')
 	assert s == 'foo baz'
+	subject = 'qux'
+	s = r.replace_one_extended(subject, 'foo')
+	assert s == 'qux'
+	s = r.replace_all_extended(subject, 'foo')
+	assert s == 'qux'
 
 	r = must_compile(r'\b([dn].*?)\b')
 	subject = 'Lorem nisi dis diam a cras placerat natoque'
-	s = r.replace_all_extended(subject, r'\U$1')?
+	s = r.replace_all_extended(subject, r'\U$1')
 	assert s == 'Lorem NISI DIS DIAM a cras placerat NATOQUE'
-	s = r.replace_one_extended(subject, r'\U$1')?
+	s = r.replace_one_extended(subject, r'\U$1')
 	assert s == 'Lorem NISI dis diam a cras placerat natoque'
 }
 

@@ -127,7 +127,7 @@ fn main() {
     println(s2) // 'Lorem NISI DIS DIAM a cras placerat NATOQUE'
 
     // Replace all matched strings with upper case (PCRE2 extended replacement syntax).
-    s3 := r.replace_all_extended(subject, r'\U$1')?
+    s3 := r.replace_all_extended(subject, r'\U$1')
     println(s3) // 'Lorem NISI DIS DIAM a cras placerat NATOQUE'
 }
 </code></pre>
@@ -152,7 +152,8 @@ fn main() {
 
 						<section id="compile" class="doc-node">
 							<div class="title"><h2>fn compile <a href="#compile">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token function">compile</span><span class="token punctuation">(</span>pattern <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span>Regex</code></pre>
-<p><code>compile</code> parses a regular expression <code>pattern</code> and returns the corresponding <code>Regexp</code> struct.</p>
+<p><code>compile</code> parses a regular expression <code>pattern</code> and returns the corresponding <code>Regexp</code> struct.<br>
+If the pattern fails to parse an error is returned.</p>
 
 </section>
 						<section id="escape_meta" class="doc-node">
@@ -189,7 +190,7 @@ If V's <code>-autofree</code> option is enabled V's autofree engine calls <code>
 <p><code>find_one_index</code> searches <code>subject</code> for the first match and returns an array of <code>subject</code> byte indexes identifying the match and submatches.</p>
 <ul>
 <li><code>result[0]..result[1]</code> is the entire match.</li>
-<li><code>result[2*N..2*N+2]</code> is the Nth submatch.</li>
+<li><code>result[2*N..2*N+2]</code> is the Nth submatch (N = 1...).</li>
 <li>If a subpattern did not participate in the match its indexes will be <code>-1</code>.</li>
 <li>If no match is found an error is returned.</li>
 </ul>
@@ -285,20 +286,20 @@ In all other respects behaves like the <code>replace_all</code> method.</p>
 
 </section>
 						<section id="Regex.replace_all_extended" class="doc-node">
-							<div class="title"><h2>fn (Regex) replace_all_extended <a href="#Regex.replace_all_extended">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">replace_all_extended</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">,</span> repl <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token builtin">string</span></code></pre>
+							<div class="title"><h2>fn (Regex) replace_all_extended <a href="#Regex.replace_all_extended">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">replace_all_extended</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">,</span> repl <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token builtin">string</span></code></pre>
 <p><code>replace_all_extended</code> returns a copy of the <code>subject</code> string with all matches of the regular expression replaced by the <code>repl</code> string.<br>
 The <code>repl</code> string supports the PCRE2 extended replacements string syntax (see <code>PCRE2_SUBSTITUTE_EXTENDED</code> in the <a href="https://www.pcre.org/current/doc/html/pcre2api.html">pcre2api</a> man page).</p>
 
 </section>
 						<section id="Regex.replace_one_extended" class="doc-node">
-							<div class="title"><h2>fn (Regex) replace_one_extended <a href="#Regex.replace_one_extended">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">replace_one_extended</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">,</span> repl <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token builtin">string</span></code></pre>
+							<div class="title"><h2>fn (Regex) replace_one_extended <a href="#Regex.replace_one_extended">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">replace_one_extended</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">,</span> repl <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token builtin">string</span></code></pre>
 <p><code>replace_one_extended</code> returns a copy of the <code>subject</code> string with the first match of the regular expression replaced by the <code>repl</code> string.<br>
 The <code>repl</code> string supports the PCRE2 extended replacements string syntax (see <code>PCRE2_SUBSTITUTE_EXTENDED</code> in the <a href="https://www.pcre.org/current/doc/html/pcre2api.html">pcre2api</a> man page).</p>
 
 </section>
 
           <div class="footer">
-            Powered by vdoc. Generated on: 20 Oct 2022 11:42:35
+            Powered by vdoc. Generated on: 20 Oct 2022 14:32:19
           </div>
         </div>
         

@@ -7,13 +7,18 @@ fn test_compile() {
 	defer {
 		r.free() // Only necessary if autofree is not enabled.
 	}
+	assert r.pattern == r'foo'
 	assert r.subpattern_count == 0
+	assert r.str().starts_with(r'RegEx{ pattern: foo, subpattern_count: 0,')
 
 	r = compile(r'a(b)c(d)')?
+	assert r.pattern == r'a(b)c(d)'
 	assert r.subpattern_count == 2
 
 	r = compile(r'^\\?\.((?:\s*[a-zA-Z][\w\-]*)+)*(?:\s*)?(#[a-zA-Z][\w\-]*\s*)?(?:\s*)?(?:"(.+?)")?(?:\s*)?(\[.+])?(?:\s*)?([+-][ \w+-]+)?$')?
+	assert r.pattern == r'^\\?\.((?:\s*[a-zA-Z][\w\-]*)+)*(?:\s*)?(#[a-zA-Z][\w\-]*\s*)?(?:\s*)?(?:"(.+?)")?(?:\s*)?(\[.+])?(?:\s*)?([+-][ \w+-]+)?$'
 	assert r.subpattern_count == 5
+	assert r.str().starts_with(r'RegEx{ pattern: ^\\?\.((?:\s*[a-zA-Z][\w\-]*)+)*(?:\s*)?(#[a-zA-Z][\w\-]*\s*)?(?:\s*)?(?:"(.+?)")?(?:\s*)?(\[.+])?(?:\s*)?([+-][ \w+-]+)?$, subpattern_count: 5,')
 
 	if _ := compile(r'\') {
 		assert false, 'should have returned an error'

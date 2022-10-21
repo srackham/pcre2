@@ -13,6 +13,11 @@ mut:
 	re &C.pcre2_code
 }
 
+// `str` returns a human readable representation of a `Regex`.
+pub fn (r Regex) str() string {
+	return 'RegEx{ pattern: $r.pattern, subpattern_count: $r.subpattern_count, re: 0x${u64(r.re).hex()} }'
+}
+
 // `MatchData` an struct containing match results; it is returned by the `Regex.find_match` method.
 // * `subject` is the searched string.
 // * `ovector` is an array of start/end index pairs specifying the byte offsets of the match and submatches in the `subject` string.

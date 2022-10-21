@@ -1,5 +1,7 @@
 # pcre2
 
+**NOTE**: This release is graded alpha and is likely to experience API
+changes up until the 1.0 release.
 ## Overview
 A V library module for processing [Perl Compatible Regular Expressions (PCRE)](https://en.wikipedia.org/wiki/Perl_Compatible_Regular_Expressions) using the [PCRE2 library](https://www.pcre.org/).
 

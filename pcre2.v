@@ -405,3 +405,33 @@ pub fn (r &Regex) replace_all_extended(subject string, repl string) string {
 pub fn (r &Regex) replace_one_extended(subject string, repl string) string {
 	return r.substitute(subject, 0, repl, C.PCRE2_SUBSTITUTE_EXTENDED) or { subject }
 }
+
+// `split_n` splits the `subject` string at regular expression match boundaries and returns an array of the split strings.
+// * If `n >= 0`, then at most `n` matches are processed; otherwise, all matches are processed.
+fn (r &Regex) split_n(subject string, n int) []string {
+	matches := r.find_n_matchdata(subject, n)
+	mut res := []string{}
+	mut pos := 0
+	for m in matches {
+		res << subject[pos..m.ovector[0]]
+		pos = m.ovector[1]
+	}
+	res << subject[pos..]
+	return res
+}
+
+// `split_all` splits the `subject` string at regular expression match boundaries and returns an array of the split strings.
+// If no matches are found a single-element array containing `subject` string is returned.
+pub fn (r &Regex) split_all(subject string) []string {
+	return r.split_n(subject, -1)
+}
+
+// `split_one` splits the `subject` string at the first regular expression match boundary and returns an array of the two split strings.
+// If no match is found an error is returned.
+pub fn (r &Regex) split_one(subject string) ?[]string {
+	res := r.split_n(subject, 1)
+	if res.len != 2 {
+		return error('no match')
+	}
+	return res
+}

@@ -74,6 +74,8 @@
 <li><a href="#Regex.replace_one_submatch_fn">fn replace_one_submatch_fn</a></li>
 <li><a href="#Regex.replace_all_extended">fn replace_all_extended</a></li>
 <li><a href="#Regex.replace_one_extended">fn replace_one_extended</a></li>
+<li><a href="#Regex.split_all">fn split_all</a></li>
+<li><a href="#Regex.split_one">fn split_one</a></li>
 </ul>
 </li>
 
@@ -85,6 +87,8 @@
         <div class="doc-content">
           						<section id="readme_pcre2" class="doc-node">
 							<div class="title"><h1> pcre2 <a href="#readme_pcre2">#</a></h1></div><h1>pcre2</h1>
+<p><strong>NOTE</strong>: This release is graded alpha and is likely to experience API
+changes up until the 1.0 release.</p>
 <h2>Overview</h2>
 <p>A V library module for processing <a href="https://en.wikipedia.org/wiki/Perl_Compatible_Regular_Expressions">Perl Compatible Regular Expressions (PCRE)</a> using the <a href="https://www.pcre.org/">PCRE2 library</a>.</p>
 <ul>
@@ -319,9 +323,21 @@ The <code>repl</code> string supports the PCRE2 extended replacements string syn
 The <code>repl</code> string supports the PCRE2 extended replacements string syntax (see <code>PCRE2_SUBSTITUTE_EXTENDED</code> in the <a href="https://www.pcre.org/current/doc/html/pcre2api.html">pcre2api</a> man page).</p>
 
 </section>
+						<section id="Regex.split_all" class="doc-node">
+							<div class="title"><h2>fn (Regex) split_all <a href="#Regex.split_all">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">split_all</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span></code></pre>
+<p><code>split_all</code> splits the <code>subject</code> string at regular expression match boundaries and returns an array of the split strings.<br>
+If no matches are found a single-element array containing <code>subject</code> string is returned.</p>
+
+</section>
+						<section id="Regex.split_one" class="doc-node">
+							<div class="title"><h2>fn (Regex) split_one <a href="#Regex.split_one">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">split_one</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span></code></pre>
+<p><code>split_one</code> splits the <code>subject</code> string at the first regular expression match boundary and returns an array of the two split strings.<br>
+If no match is found an error is returned.</p>
+
+</section>
 
           <div class="footer">
-            Powered by vdoc. Generated on: 21 Oct 2022 14:12:16
+            Powered by vdoc. Generated on: 22 Oct 2022 11:05:17
           </div>
         </div>
         

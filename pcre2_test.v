@@ -242,3 +242,21 @@ fn test_replace() {
 	r = pcre2.must_compile(r'✅')
 	assert r.replace_n('✅ ✅✅', '🚀', 2) == '🚀 🚀✅'
 }
+
+fn test_split() {
+	r := pcre2.compile(r'foo|bar')?
+	mut subject := 'foobar boo steelbar toolbox foot tooooot'
+	assert r.split_all(subject) == ['', '', ' boo steel', ' toolbox ', 't tooooot']
+	assert r.split_one(subject)? == ['', 'bar boo steelbar toolbox foot tooooot']
+
+	subject = ''
+	assert r.split_all(subject) == ['']
+	if _ := r.split_one(subject) {
+		assert false, 'should have returned an error'
+	} else {
+		assert err.msg() == 'no match'
+	}
+
+	subject = 'qux'
+	assert r.split_all(subject) == ['qux']
+}

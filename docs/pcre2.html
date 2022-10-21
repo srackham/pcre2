@@ -172,6 +172,7 @@ If the pattern fails to parse an error is returned.</p>
 </section>
 						<section id="Regex" class="doc-node">
 							<div class="title"><h2>struct Regex <a href="#Regex">#</a></h2></div><pre class="signature"><code><span class="token keyword">struct</span> <span class="token symbol">Regex</span> <span class="token punctuation">{</span>
+<span class="token keyword">pub</span><span class="token punctuation">:</span>
 	pattern          <span class="token builtin">string</span>
 	subpattern_count <span class="token builtin">int</span>
 <span class="token keyword">mut</span><span class="token punctuation">:</span>
@@ -187,7 +188,7 @@ If the pattern fails to parse an error is returned.</p>
 </section>
 						<section id="Regex.str" class="doc-node">
 							<div class="title"><h2>fn (Regex) str <a href="#Regex.str">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r Regex<span class="token punctuation">)</span> <span class="token function">str</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">string</span></code></pre>
-<p><code>str</code> returns a human readable representation of a <code>Regex</code>.</p>
+<p><code>str</code> returns a human-readable representation of a <code>Regex</code>.</p>
 
 </section>
 						<section id="Regex.free" class="doc-node">
@@ -320,7 +321,7 @@ The <code>repl</code> string supports the PCRE2 extended replacements string syn
 </section>
 
           <div class="footer">
-            Powered by vdoc. Generated on: 21 Oct 2022 13:49:22
+            Powered by vdoc. Generated on: 21 Oct 2022 14:12:16
           </div>
         </div>
         

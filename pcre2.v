@@ -7,13 +7,14 @@ import strings
 // * `subpattern_count` is the number of capturing subpatterns.
 // * `re` is a pointer to the compiled PCRE2 regular expression.
 pub struct Regex {
+pub:
 	pattern          string
 	subpattern_count int
 mut:
 	re &C.pcre2_code
 }
 
-// `str` returns a human readable representation of a `Regex`.
+// `str` returns a human-readable representation of a `Regex`.
 pub fn (r Regex) str() string {
 	return 'RegEx{ pattern: $r.pattern, subpattern_count: $r.subpattern_count, re: 0x${u64(r.re).hex()} }'
 }

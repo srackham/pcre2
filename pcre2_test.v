@@ -4,7 +4,7 @@ import pcre2
 import strings
 
 fn test_compile() {
-	mut r := pcre2.compile(r'foo')?
+	mut r := pcre2.compile(r'foo')!
 	defer {
 		r.free() // Only necessary if autofree is not enabled.
 	}
@@ -12,11 +12,11 @@ fn test_compile() {
 	assert r.subpattern_count == 0
 	assert r.str().starts_with(r'RegEx{ pattern: foo, subpattern_count: 0,')
 
-	r = pcre2.compile(r'a(b)c(d)')?
+	r = pcre2.compile(r'a(b)c(d)')!
 	assert r.pattern == r'a(b)c(d)'
 	assert r.subpattern_count == 2
 
-	r = pcre2.compile(r'^\\?\.((?:\s*[a-zA-Z][\w\-]*)+)*(?:\s*)?(#[a-zA-Z][\w\-]*\s*)?(?:\s*)?(?:"(.+?)")?(?:\s*)?(\[.+])?(?:\s*)?([+-][ \w+-]+)?$')?
+	r = pcre2.compile(r'^\\?\.((?:\s*[a-zA-Z][\w\-]*)+)*(?:\s*)?(#[a-zA-Z][\w\-]*\s*)?(?:\s*)?(?:"(.+?)")?(?:\s*)?(\[.+])?(?:\s*)?([+-][ \w+-]+)?$')!
 	assert r.pattern == r'^\\?\.((?:\s*[a-zA-Z][\w\-]*)+)*(?:\s*)?(#[a-zA-Z][\w\-]*\s*)?(?:\s*)?(?:"(.+?)")?(?:\s*)?(\[.+])?(?:\s*)?([+-][ \w+-]+)?$'
 	assert r.subpattern_count == 5
 	assert r.str().starts_with(r'RegEx{ pattern: ^\\?\.((?:\s*[a-zA-Z][\w\-]*)+)*(?:\s*)?(#[a-zA-Z][\w\-]*\s*)?(?:\s*)?(?:"(.+?)")?(?:\s*)?(\[.+])?(?:\s*)?([+-][ \w+-]+)?$, subpattern_count: 5,')
@@ -30,7 +30,7 @@ fn test_compile() {
 
 fn test_must_compile() {
 	pcre2.must_compile(r'x')
-	pcre2.must_compile(r'^\\?\.((?:\s*[a-zA-Z][\w\-]*)+)*(?:\s*)?(#[a-zA-Z][\w\-]*\s*)?(?:\s*)?(?:"(.+?)")?(?:\s*)?(\[.+])?(?:\s*)?([+-][ \w+-]+)?$')
+	pcre2.must_compile(r'^\\?\.((?:\s*[a-zA-Z][\w\-]*)+)*(?:\s*)?(#[a-zA-Z][\w\-]*\s*)?(?:\s*)?(?:"(.+?)")?(?:\s*)?(\[.+])?(?:\s*)?([+-][ \w+-]+)!$')
 }
 
 fn test_escape_meta() {
@@ -39,23 +39,23 @@ fn test_escape_meta() {
 }
 
 fn test_substitute() {
-	mut r := pcre2.compile(r'baz')?
-	mut s := r.substitute('', 0, 'foo', 0)?
+	mut r := pcre2.compile(r'baz')!
+	mut s := r.substitute('', 0, 'foo', 0)!
 	assert s == ''
 
-	s = r.substitute('baz bar', 0, 'foo', 0)?
+	s = r.substitute('baz bar', 0, 'foo', 0)!
 	assert s == 'foo bar'
 
-	s = r.substitute('foobar', 0, 'foo', 0)?
+	s = r.substitute('foobar', 0, 'foo', 0)!
 	assert s == 'foobar'
 
-	s = r.substitute('baz baz', 0, 'foo', 0)?
+	s = r.substitute('baz baz', 0, 'foo', 0)!
 	assert s == 'foo baz'
 
-	s = r.substitute('baz baz', 0, 'foo', C.PCRE2_SUBSTITUTE_GLOBAL)?
+	s = r.substitute('baz baz', 0, 'foo', C.PCRE2_SUBSTITUTE_GLOBAL)!
 	assert s == 'foo foo'
 
-	s = r.substitute(strings.repeat_string('foo', 1024) + 'baz', 0, 'foo', 0)?
+	s = r.substitute(strings.repeat_string('foo', 1024) + 'baz', 0, 'foo', 0)!
 	assert s == strings.repeat_string('foo', 1025)
 
 	if _ := r.substitute('baz bar', 0, '$', 0) {
@@ -66,7 +66,7 @@ fn test_substitute() {
 }
 
 fn test_extended() {
-	mut r := pcre2.compile(r'baz')?
+	mut r := pcre2.compile(r'baz')!
 	mut subject := 'baz baz'
 	mut s := r.replace_all_extended(subject, 'foo')
 	assert s == 'foo foo'
@@ -87,13 +87,13 @@ fn test_extended() {
 }
 
 fn test_has_match() {
-	mut r := pcre2.compile(r'foo')?
+	mut r := pcre2.compile(r'foo')!
 	assert !r.has_match('')
 	assert !r.has_match('bar')
 	assert r.has_match('foo')
 	assert r.has_match('baz foo')
 
-	r = pcre2.compile(r'x|(y)|(z)')?
+	r = pcre2.compile(r'x|(y)|(z)')!
 	assert !r.has_match('u')
 	assert r.has_match('x')
 	assert r.has_match('y')
@@ -113,9 +113,7 @@ fn test_find_index() {
 		[10, 12, 11, 12]]
 
 	if _ := r.find_one_index('') {
-		assert false, 'should have returned an error'
-	} else {
-		assert err.msg() == 'no match'
+		assert false, 'should have returned none'
 	}
 	assert r.find_one_index('an xy and xz')? == [3, 5, 4, 5]
 
@@ -138,9 +136,7 @@ fn test_find_submatch() {
 		['xz', 'z']]
 
 	if _ := r.find_one_submatch('') {
-		assert false, 'should have returned an error'
-	} else {
-		assert err.msg() == 'no match'
+		assert false, 'should have returned none'
 	}
 	assert r.find_one_submatch('an xy and xz')? == ['xy', 'y']
 
@@ -203,9 +199,7 @@ fn test_find() {
 	mut r := pcre2.must_compile(r'\d')
 	assert r.find_n('abcdeg', -1) == []
 	if _ := r.find_one('abcdeg') {
-		assert false, 'should have returned an error'
-	} else {
-		assert err.msg() == 'no match'
+		assert false, 'should have returned none'
 	}
 	assert r.find_n('abcde5g', -1) == ['5']
 	assert r.find_n('1 abc 9 de 5 g', -1) == ['1', '9', '5']
@@ -244,7 +238,7 @@ fn test_replace() {
 }
 
 fn test_split() {
-	r := pcre2.compile(r'foo|bar')?
+	r := pcre2.compile(r'foo|bar')!
 	mut subject := 'foobar boo steelbar toolbox foot tooooot'
 	assert r.split_all(subject) == ['', '', ' boo steel', ' toolbox ', 't tooooot']
 	assert r.split_one(subject)? == ['', 'bar boo steelbar toolbox foot tooooot']
@@ -252,9 +246,7 @@ fn test_split() {
 	subject = ''
 	assert r.split_all(subject) == ['']
 	if _ := r.split_one(subject) {
-		assert false, 'should have returned an error'
-	} else {
-		assert err.msg() == 'no match'
+		assert false, 'should have returned none'
 	}
 
 	subject = 'qux'

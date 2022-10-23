@@ -156,7 +156,7 @@ fn main() {
 </section>
 
 						<section id="compile" class="doc-node">
-							<div class="title"><h2>fn compile <a href="#compile">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token function">compile</span><span class="token punctuation">(</span>pattern <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span>Regex</code></pre>
+							<div class="title"><h2>fn compile <a href="#compile">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token function">compile</span><span class="token punctuation">(</span>pattern <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">!</span>Regex</code></pre>
 <p><code>compile</code> parses a regular expression <code>pattern</code> and returns the corresponding <code>Regexp</code> struct.<br>
 If the pattern fails to parse an error is returned.</p>
 
@@ -217,7 +217,7 @@ If V's <code>-autofree</code> option is enabled V's autofree engine calls <code>
 						<section id="Regex.find_one" class="doc-node">
 							<div class="title"><h2>fn (Regex) find_one <a href="#Regex.find_one">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">find_one</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token builtin">string</span></code></pre>
 <p><code>find_one</code> returns the first matched string from the <code>subject</code> string.<br>
-If a match is not found an error is returned.</p>
+If a match is not found <code>none</code> returned.</p>
 
 <section class="doc-node examples"><h4>Example</h4>
 <pre><code class="language-v"><span class="token keyword">assert</span> <span class="token function">must_compile</span><span class="token punctuation">(</span>r<span class="token string">'\d'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">find_one</span><span class="token punctuation">(</span><span class="token string">'1 abc 9 de 5 g'</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token string">'1'</span></code></pre>
@@ -235,7 +235,7 @@ If a match is not found an error is returned.</p>
 <li><code>result[0]..result[1]</code> is the entire match.</li>
 <li><code>result[2*N..2*N+2]</code> is the Nth submatch (N = 1...).</li>
 <li>If a subpattern did not participate in the match its indexes will be <code>-1</code>.</li>
-<li>If no match is found an error is returned.</li>
+<li>If no match is found <code>none</code> is returned.</li>
 </ul>
 
 </section>
@@ -256,7 +256,7 @@ If a match is not found an error is returned.</p>
 <li>The first element (at index 0) contains the the entire matched text.</li>
 <li>Subsequent elements (indexes 1..) contain corresponding matched subpatterns</li>
 <li>If a subpattern did not participate in the match the corresponding array element is set to ''.</li>
-<li>If a match is not found an error is returned.</li>
+<li>If a match is not found <code>none</code> is returned.</li>
 </ul>
 
 </section>
@@ -332,12 +332,12 @@ If no matches are found a single-element array containing <code>subject</code> s
 						<section id="Regex.split_one" class="doc-node">
 							<div class="title"><h2>fn (Regex) split_one <a href="#Regex.split_one">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r <span class="token operator">&</span>Regex<span class="token punctuation">)</span> <span class="token function">split_one</span><span class="token punctuation">(</span>subject <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token operator">?</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span></code></pre>
 <p><code>split_one</code> splits the <code>subject</code> string at the first regular expression match boundary and returns an array of the two split strings.<br>
-If no match is found an error is returned.</p>
+If no match is found <code>none</code> is returned.</p>
 
 </section>
 
           <div class="footer">
-            Powered by vdoc. Generated on: 22 Oct 2022 11:05:17
+            Powered by vdoc. Generated on: 23 Oct 2022 21:36:23
           </div>
         </div>
         

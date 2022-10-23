@@ -60,7 +60,7 @@ fn (m MatchData) get_all() []string {
 
 // `compile` parses a regular expression `pattern` and returns the corresponding `Regexp` struct.
 // If the pattern fails to parse an error is returned.
-pub fn compile(pattern string) ?Regex {
+pub fn compile(pattern string) !Regex {
 	mut error_code := int(0)
 	mut error_offset := usize(0)
 	r := C.pcre2_compile(pattern.str, pattern.len, 0, &error_code, &error_offset, 0)
@@ -103,7 +103,7 @@ pub fn (r &Regex) has_match(subject string) bool {
 }
 
 // `find_match` searches the `subject` string starting at index `pos` and returns a `MatchData` struct.
-// If no match is found an error is returned.
+// If no match is found `none` is returned.
 fn (r &Regex) find_match(subject string, pos int) ?MatchData {
 	if pos < 0 || pos >= subject.len {
 		return error('search pos index out of bounds: $pos')
@@ -115,7 +115,7 @@ fn (r &Regex) find_match(subject string, pos int) ?MatchData {
 	count := C.pcre2_match(r.re, subject.str, subject.len, pos, 0, match_data, 0)
 	if count < 0 {
 		match count {
-			C.PCRE2_ERROR_NOMATCH { return error('no match') }
+			C.PCRE2_ERROR_NOMATCH { return none }
 			else { panic('pcre2_match() returned error code $count') }
 		}
 	}
@@ -169,12 +169,12 @@ pub fn (r &Regex) find_all(subject string) []string {
 }
 
 // `find_one` returns the first matched string from the `subject` string.
-// If a match is not found an error is returned.
+// If a match is not found `none` returned.
 // Example: assert must_compile(r'\d').find_one('1 abc 9 de 5 g') == '1'
 pub fn (r &Regex) find_one(subject string) ?string {
 	matches := r.find_n(subject, 1)
 	if matches.len == 0 {
-		return error('no match')
+		return none
 	}
 	return matches[0]
 }
@@ -198,11 +198,11 @@ pub fn (r &Regex) find_all_index(subject string) [][]int {
 // * `result[0]..result[1]` is the entire match.
 // * `result[2*N..2*N+2]` is the Nth submatch (N = 1...).
 // * If a subpattern did not participate in the match its indexes will be `-1`.
-// * If no match is found an error is returned.
+// * If no match is found `none` is returned.
 pub fn (r &Regex) find_one_index(subject string) ?[]int {
 	m := r.find_n_index(subject, 1)
 	if m.len == 0 {
-		return error('no match')
+		return none
 	}
 	return m[0]
 }
@@ -232,11 +232,11 @@ pub fn (r &Regex) find_all_submatch(subject string) [][]string {
 // * The first element (at index 0) contains the the entire matched text.
 // * Subsequent elements (indexes 1..) contain corresponding matched subpatterns
 // * If a subpattern did not participate in the match the corresponding array element is set to ''.
-// * If a match is not found an error is returned.
+// * If a match is not found `none` is returned.
 pub fn (r &Regex) find_one_submatch(subject string) ?[]string {
 	m := r.find_n_submatch(subject, 1)
 	if m.len == 0 {
-		return error('no match')
+		return none
 	}
 	return m[0]
 }
@@ -366,7 +366,7 @@ fn replace_matches(subject string, matches []string) string {
 // `options` is passed to the PCRE2 `pcre2_substitute` API.
 // By default only the first match is replaced, use the `C.PCRE2_SUBSTITUTE_GLOBAL` option to replace all matches.
 // If no matches are found the unmodified `subject` is returned.
-fn (r &Regex) substitute(subject string, pos int, repl string, options int) ?string {
+fn (r &Regex) substitute(subject string, pos int, repl string, options int) !string {
 	mut outbuffer := []u8{len: 1024}
 	outlen := usize(outbuffer.len)
 	mut count := C.pcre2_substitute(r.re, subject.str, subject.len, pos, C.PCRE2_SUBSTITUTE_OVERFLOW_LENGTH | options,
@@ -427,11 +427,11 @@ pub fn (r &Regex) split_all(subject string) []string {
 }
 
 // `split_one` splits the `subject` string at the first regular expression match boundary and returns an array of the two split strings.
-// If no match is found an error is returned.
+// If no match is found `none` is returned.
 pub fn (r &Regex) split_one(subject string) ?[]string {
 	res := r.split_n(subject, 1)
 	if res.len != 2 {
-		return error('no match')
+		return none
 	}
 	return res
 }

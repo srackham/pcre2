@@ -11,12 +11,21 @@ pub:
 	pattern          string
 	subpattern_count int
 mut:
-	re &C.pcre2_code
+	re &C.pcre2_code = unsafe { nil }
+}
+
+pub fn (r1 Regex) == (r2 Regex) bool {
+	return r1.pattern == r2.pattern
 }
 
 // `str` returns a human-readable representation of a `Regex`.
 pub fn (r Regex) str() string {
 	return 'RegEx{ pattern: $r.pattern, subpattern_count: $r.subpattern_count, re: 0x${u64(r.re).hex()} }'
+}
+
+// `is_nil` returns true if the `r` does not been initialized with a compiled PCRE2 regular expression.
+pub fn (r Regex) is_nil() bool {
+	return u64(r.re) == 0
 }
 
 // `MatchData` an struct containing match results; it is returned by the `Regex.find_match` method.

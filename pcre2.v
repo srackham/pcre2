@@ -114,7 +114,7 @@ pub fn (r &Regex) has_match(subject string) bool {
 // `find_match` searches the `subject` string starting at index `pos` and returns a `MatchData` struct.
 // If no match is found `none` is returned.
 fn (r &Regex) find_match(subject string, pos int) ?MatchData {
-	if pos < 0 || pos >= subject.len {
+	if pos < 0 || pos > subject.len {
 		return error('search pos index out of bounds: $pos')
 	}
 	match_data := C.pcre2_match_data_create_from_pattern(r.re, 0)

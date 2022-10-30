@@ -6,10 +6,14 @@ fn test_find_match() {
 	assert m.ovector.len == 1 * 2
 	assert m.ovector == [4, 7]
 
-	if _ := r.find_match('', 0) {
+	if _ := r.find_match('', 1) {
 		assert false, 'should have returned an error'
 	} else {
-		assert err.msg() == 'search pos index out of bounds: 0'
+		assert err.msg() == 'search pos index out of bounds: 1'
+	}
+
+	if _ := r.find_match('', 0) {
+		assert false, 'should have returned none'
 	}
 
 	if _ := r.find_match('baz foo bar', 5) {

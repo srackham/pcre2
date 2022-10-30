@@ -140,6 +140,14 @@ fn test_find_submatch() {
 	}
 	assert r.find_one_submatch('an xy and xz')? == ['xy', 'y']
 
+	r = pcre2.must_compile('^x$')
+	assert r.find_one_submatch('x')? == ['x']
+
+	// r = pcre2.must_compile('^(?!.+)$')
+	r = pcre2.must_compile('^$')
+	assert r.has_match('')
+	assert r.find_one_submatch('')? == ['']
+
 	r = pcre2.must_compile('(.*?)((foo)+)')
 	mut submatches := []string{}
 	for subject in ['My name is foo', 'Mine is foofoo', 'Mine is baz'] {

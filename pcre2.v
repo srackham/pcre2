@@ -14,20 +14,6 @@ mut:
 	re &C.pcre2_code = unsafe { nil }
 }
 
-pub fn (r1 Regex) == (r2 Regex) bool {
-	return r1.pattern == r2.pattern
-}
-
-// `str` returns a human-readable representation of a `Regex`.
-pub fn (r Regex) str() string {
-	return 'RegEx{ pattern: $r.pattern, subpattern_count: $r.subpattern_count, re: 0x${u64(r.re).hex()} }'
-}
-
-// `is_nil` returns true if the `r` does not been initialized with a compiled PCRE2 regular expression.
-pub fn (r Regex) is_nil() bool {
-	return u64(r.re) == 0
-}
-
 // `MatchData` an struct containing match results; it is returned by the `Regex.find_match` method.
 // * `subject` is the searched string.
 // * `ovector` is an array of start/end index pairs specifying the byte offsets of the match and submatches in the `subject` string.
@@ -37,6 +23,33 @@ pub fn (r Regex) is_nil() bool {
 struct MatchData {
 	subject string
 	ovector []int
+}
+
+pub fn (r1 Regex) == (r2 Regex) bool {
+	return r1.pattern == r2.pattern
+}
+
+// `str` returns a human-readable representation of a `Regex`.
+pub fn (r Regex) str() string {
+	return 'RegEx{ pattern: $r.pattern, subpattern_count: $r.subpattern_count, re: 0x${u64(r.re).hex()} }'
+}
+
+// `is_nil` returns true if the `r` has not been initialized with a compiled PCRE2 regular expression.
+pub fn (r Regex) is_nil() bool {
+	return u64(r.re) == 0
+}
+
+// `get_error_message` synthesises a PCRE2 error message from the PCRE2 error code and offset.
+// If `offset` is less than zero it is ignored.
+fn get_error_message(prefix string, error_code int, offset usize) string {
+	buffer := []u8{len: 1024}
+	C.pcre2_get_error_message(error_code, buffer.data, buffer.len)
+	err_msg := unsafe { cstring_to_vstring(buffer.data) }
+	if offset < 0 {
+		return '$prefix: error $error_code: $err_msg'
+	} else {
+		return '$prefix: error $error_code at offset $offset: $err_msg'
+	}
 }
 
 // `get` returns captured match and submatch strings by `number`. The number zero refers to the entire match, with numbers 1.. referring to parenthesized subpatterns.
@@ -74,15 +87,12 @@ pub fn compile(pattern string) !Regex {
 	mut error_offset := usize(0)
 	r := C.pcre2_compile(pattern.str, pattern.len, 0, &error_code, &error_offset, 0)
 	if isnil(r) {
-		buffer := []u8{len: 256}
-		C.pcre2_get_error_message(error_code, buffer.data, buffer.len)
-		err_msg := unsafe { cstring_to_vstring(buffer.data) }
-		return error('compilation failed at offset $error_offset: $err_msg')
+		return error(get_error_message('pcre2_compile()', error_code, error_offset))
 	}
 	mut capture_count := 0
 	error_code = C.pcre2_pattern_info(r, C.PCRE2_INFO_CAPTURECOUNT, &capture_count)
 	if error_code != 0 {
-		panic('pcre2_pattern_info() returned error code $error_code')
+		return error(get_error_message('pcre2_pattern_info()', error_code, error_offset))
 	}
 	return Regex{pattern, capture_count, r}
 }
@@ -124,8 +134,12 @@ fn (r &Regex) find_match(subject string, pos int) ?MatchData {
 	count := C.pcre2_match(r.re, subject.str, subject.len, pos, 0, match_data, 0)
 	if count < 0 {
 		match count {
-			C.PCRE2_ERROR_NOMATCH { return none }
-			else { panic('pcre2_match() returned error code $count') }
+			C.PCRE2_ERROR_NOMATCH {
+				return none
+			}
+			else {
+				panic(get_error_message('pcre2_match()', count, -1))
+			}
 		}
 	}
 	if count == 0 {
@@ -386,14 +400,7 @@ fn (r &Regex) substitute(subject string, pos int, repl string, options int) !str
 			0, 0, repl.str, repl.len, outbuffer.data, &outlen)
 	}
 	if count < 0 {
-		buffer := []u8{len: 256}
-		C.pcre2_get_error_message(count, buffer.data, buffer.len)
-		err_msg := unsafe { cstring_to_vstring(buffer.data) }
-		if outlen == usize(C.PCRE2_UNSET) {
-			return error('replacement failed: $err_msg')
-		} else {
-			return error('replacement failed at offset $outlen: $err_msg')
-		}
+		return error(get_error_message('pcre2_substitute()', count, outlen))
 	}
 	if count == 0 {
 		return subject

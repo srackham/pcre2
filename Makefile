@@ -9,14 +9,16 @@ SHELL := bash
 .ONESHELL:
 # .SILENT:
 
-.PHONY: test build docs run-examples
+.PHONY: test build fmt docs run-examples
 
 test:
 	v -cstrict test .
 	make run-examples
 
-build: test docs
+fmt:
 	v fmt -w *.v examples/*.v
+
+build: fmt test docs
 	# Can't use -cstrict (see https://github.com/vlang/v/issues/16016)
 	#v -cc gcc -cstrict -prod examples/pcre2-example-1.v
 	v -cc gcc -prod examples/pcre2-example-1.v

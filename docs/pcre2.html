@@ -57,7 +57,9 @@
 </ul>
 </li>
 <li class="open"><a href="#Regex">struct Regex</a>        <ul>
+<li><a href="#Regex.==">fn ==</a></li>
 <li><a href="#Regex.str">fn str</a></li>
+<li><a href="#Regex.is_nil">fn is_nil</a></li>
 <li><a href="#Regex.free">fn free</a></li>
 <li><a href="#Regex.has_match">fn has_match</a></li>
 <li><a href="#Regex.find_all">fn find_all</a></li>
@@ -180,7 +182,7 @@ If the pattern fails to parse an error is returned.</p>
 	pattern          <span class="token builtin">string</span>
 	subpattern_count <span class="token builtin">int</span>
 <span class="token keyword">mut</span><span class="token punctuation">:</span>
-	re <span class="token operator">&</span>C<span class="token punctuation">.</span>pcre2_code
+	re <span class="token operator">&</span>C<span class="token punctuation">.</span>pcre2_code <span class="token operator">=</span> <span class="token keyword">unsafe</span> <span class="token punctuation">{</span> <span class="token keyword">nil</span> <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
 <p><code>Regex</code> contains the compiled regular expression.</p>
 <ul>
@@ -190,9 +192,19 @@ If the pattern fails to parse an error is returned.</p>
 </ul>
 
 </section>
+						<section id="Regex.==" class="doc-node">
+							<div class="title"><h2>fn (Regex) == <a href="#Regex.==">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r1 Regex<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token punctuation">(</span>r2 Regex<span class="token punctuation">)</span> <span class="token builtin">bool</span></code></pre>
+
+
+</section>
 						<section id="Regex.str" class="doc-node">
 							<div class="title"><h2>fn (Regex) str <a href="#Regex.str">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r Regex<span class="token punctuation">)</span> <span class="token function">str</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">string</span></code></pre>
 <p><code>str</code> returns a human-readable representation of a <code>Regex</code>.</p>
+
+</section>
+						<section id="Regex.is_nil" class="doc-node">
+							<div class="title"><h2>fn (Regex) is_nil <a href="#Regex.is_nil">#</a></h2></div><pre class="signature"><code><span class="token keyword">fn</span> <span class="token punctuation">(</span>r Regex<span class="token punctuation">)</span> <span class="token function">is_nil</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token builtin">bool</span></code></pre>
+<p><code>is_nil</code> returns true if the <code>r</code> has not been initialized with a compiled PCRE2 regular expression.</p>
 
 </section>
 						<section id="Regex.free" class="doc-node">
@@ -337,7 +349,7 @@ If no match is found <code>none</code> is returned.</p>
 </section>
 
           <div class="footer">
-            Powered by vdoc. Generated on: 23 Oct 2022 21:36:23
+            Powered by vdoc. Generated on: 2 Nov 2022 14:32:56
           </div>
         </div>
         

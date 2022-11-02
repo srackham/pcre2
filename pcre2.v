@@ -122,7 +122,7 @@ pub fn (r &Regex) has_match(subject string) bool {
 }
 
 // `find_match` searches the `subject` string starting at index `pos` and returns a `MatchData` struct.
-// If no match is found `none` is returned.
+// If no match is found `none` is returned, if an error occurs an error is returned.
 fn (r &Regex) find_match(subject string, pos int) ?MatchData {
 	if pos < 0 || pos > subject.len {
 		return error('search pos index out of bounds: $pos')
@@ -138,7 +138,7 @@ fn (r &Regex) find_match(subject string, pos int) ?MatchData {
 				return none
 			}
 			else {
-				panic(get_error_message('pcre2_match()', count, -1))
+				return error(get_error_message('pcre2_match()', count, -1))
 			}
 		}
 	}
@@ -161,6 +161,9 @@ fn (r &Regex) find_match(subject string, pos int) ?MatchData {
 
 // `find_n_matchdata` returns an array of `MatchData` values from the first `n` matches in the `subject` string.
 // * If `n >= 0`, then at most `n` matched indexes are returned; otherwise, all matched indexes are returned.
+//
+// NOTE: This function does not propagate `find_match` errors because occasionally an unmatched `subject`
+// triggers a `match limit exceeded` error, in these situations we just assume an unmatched `subject`.
 fn (r &Regex) find_n_matchdata(subject string, n int) []MatchData {
 	mut res := []MatchData{}
 	mut pos := 0

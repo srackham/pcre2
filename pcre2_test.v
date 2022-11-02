@@ -208,6 +208,8 @@ fn test_find() {
 	assert r.find_n('abcdeg', -1) == []
 	if _ := r.find_one('abcdeg') {
 		assert false, 'should have returned none'
+	} else {
+		assert err is none, 'should have returned none'
 	}
 	assert r.find_n('abcde5g', -1) == ['5']
 	assert r.find_n('1 abc 9 de 5 g', -1) == ['1', '9', '5']

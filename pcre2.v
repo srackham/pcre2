@@ -112,8 +112,8 @@ pub fn (r &Regex) free() {
 	}
 }
 
-// `has_match` return `true` if the `subject` string contains a match for the regular expression; if no then `false` is returned.
-pub fn (r &Regex) has_match(subject string) bool {
+// `is_match` return `true` if the `subject` string contains a match for the regular expression; if no then `false` is returned.
+pub fn (r &Regex) is_match(subject string) bool {
 	if _ := r.find_match(subject, 0) {
 		return true
 	} else {

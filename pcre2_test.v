@@ -86,18 +86,18 @@ fn test_extended() {
 	assert s == 'Lorem NISI dis diam a cras placerat natoque'
 }
 
-fn test_has_match() {
+fn test_is_match() {
 	mut r := pcre2.compile(r'foo')!
-	assert !r.has_match('')
-	assert !r.has_match('bar')
-	assert r.has_match('foo')
-	assert r.has_match('baz foo')
+	assert !r.is_match('')
+	assert !r.is_match('bar')
+	assert r.is_match('foo')
+	assert r.is_match('baz foo')
 
 	r = pcre2.compile(r'x|(y)|(z)')!
-	assert !r.has_match('u')
-	assert r.has_match('x')
-	assert r.has_match('y')
-	assert r.has_match('z')
+	assert !r.is_match('u')
+	assert r.is_match('x')
+	assert r.is_match('y')
+	assert r.is_match('z')
 }
 
 fn test_find_index() {
@@ -145,7 +145,7 @@ fn test_find_submatch() {
 
 	// r = pcre2.must_compile('^(?!.+)$')
 	r = pcre2.must_compile('^$')
-	assert r.has_match('')
+	assert r.is_match('')
 	assert r.find_one_submatch('')? == ['']
 
 	r = pcre2.must_compile('(.*?)((foo)+)')

@@ -7,20 +7,18 @@ SHELL := bash
 .DELETE_ON_ERROR:
 .SUFFIXES:
 .ONESHELL:
-# .SILENT:
+.SILENT:
 
 .PHONY: test build fmt docs run-examples
 
 test:
 	v -cstrict test .
-	make run-examples
 
 fmt:
 	v fmt -w *.v examples/*.v
 
 build: fmt test docs
 	# Can't use -cstrict (see https://github.com/vlang/v/issues/16016)
-	#v -cc gcc -cstrict -prod examples/pcre2-example-1.v
 	v -cc gcc -prod examples/pcre2-example-1.v
 
 docs:
@@ -28,4 +26,7 @@ docs:
 	v check-md README.md
 
 run-examples:
+	echo
+	echo "NOTE: runs examples using installed 'srackham.pcre2' module"
+	echo
 	bash -c 'cd examples && for f in pcre2-example-*.v; do v -cstrict run $$f; done'

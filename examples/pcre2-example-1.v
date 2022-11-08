@@ -1,4 +1,4 @@
-import pcre2
+import srackham.pcre2
 
 fn main() {
 	// Match words starting with `d` or `n`.

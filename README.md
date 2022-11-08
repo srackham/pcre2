@@ -12,8 +12,8 @@ A V library module for processing [Perl Compatible Regular Expressions (PCRE)](h
 - Regex `*_all_*` methods process all matches; `*_one_*` methods process the first match.
 - The Regex `replace_*_extended` methods support the PCRE2 extended replacements string syntax (see `PCRE2_SUBSTITUTE_EXTENDED` in the [pcre2api](https://www.pcre.org/current/doc/html/pcre2api.html) man page).
 - Currently there are no extraction methods for named subpatterns.
-- The [pcre module](https://github.com/vlang/pcre) (which uses the older PCRE library) was the leading light for this project.
-- Many of the methods and functions were inspired by the [Go regex package](https://pkg.go.dev/regexp).
+- The [pcre module](https://github.com/vlang/pcre) (which uses the older PCRE library) was the inspiration and starting point for this project;
+the [Go regex package](https://pkg.go.dev/regexp) also influenced the project.
 
 ## Documentation
 - [pcre2 module documentation](https://srackham.github.io/pcre2/pcre2.html).
@@ -22,7 +22,7 @@ A V library module for processing [Perl Compatible Regular Expressions (PCRE)](h
 
 ## Examples
 ```v
-import pcre2
+import srackham.pcre2
 
 fn main() {
 	// Match words starting with `d` or `n`.
@@ -68,10 +68,10 @@ Install the PCRE2 library:
 
 ## Installation
 
-    v install --git https://github.com/srackham/pcre2
+    v install srackham.pcre2
 
 Test the installation by running:
 
-    v test $HOME/.vmodules/pcre2
+    v test $HOME/.vmodules/srackham/pcre2
 
 Example installation and test workflows for Ubuntu, macOS and Windows can be found in the Github Actions [workflow file](https://github.com/srackham/pcre2/blob/master/.github/workflows/ci.yml).

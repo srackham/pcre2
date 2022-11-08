@@ -32,20 +32,19 @@ jobs:
 
       - name: Install pcre2 module
         run: |
-          v install --git https://github.com/srackham/pcre2
+          v install srackham.pcre2
 
       - name: Run tests
         run: |
-          v -cstrict test $HOME/.vmodules/pcre2
+          v -cstrict test $HOME/.vmodules/srackham/pcre2
 
       - name: Run examples
         run: |
-          v -cstrict run $HOME/.vmodules/pcre2/examples/pcre2-example-1.v
+          v -cstrict run $HOME/.vmodules/srackham/pcre2/examples/pcre2-example-1.v
 
       - name: Build example with -prod
         # Can't use -cstrict (see https://github.com/vlang/v/issues/16016)
-        #run: v -cc gcc -cstrict -prod $HOME/.vmodules/pcre2/examples/pcre2-example-1.v
-        run: v -cc gcc -prod $HOME/.vmodules/pcre2/examples/pcre2-example-1.v
+        run: v -cc gcc -prod $HOME/.vmodules/srackham/pcre2/examples/pcre2-example-1.v
 
   test-windows:
     runs-on: windows-latest
@@ -78,12 +77,12 @@ jobs:
 
       - name: Install V module pcre2
         run: |
-          .\v\v.exe install --git https://github.com/srackham/pcre2
+          .\v\v.exe install srackham.pcre2
 
       - name: Run tests
         run: |
-          .\v\v.exe test %USERPROFILE%\.vmodules\pcre2
+          .\v\v.exe test %USERPROFILE%\.vmodules\srackham\pcre2
 
       - name: Run examples
         run: |
-          .\v\v.exe run %USERPROFILE%/.vmodules/pcre2/examples/pcre2-example-1.v
+          .\v\v.exe run %USERPROFILE%/.vmodules/srackham/pcre2/examples/pcre2-example-1.v

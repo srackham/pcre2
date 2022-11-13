@@ -41,14 +41,14 @@ pub fn (r Regex) is_nil() bool {
 
 // `get_error_message` synthesises a PCRE2 error message from the PCRE2 error code and offset.
 // If `offset` is less than zero it is ignored.
-fn get_error_message(prefix string, error_code int, offset int) string {
+fn get_error_message(prefix string, pattern string, error_code int, offset int) string {
 	buffer := []u8{len: 1024}
 	C.pcre2_get_error_message(error_code, buffer.data, buffer.len)
 	err_msg := unsafe { cstring_to_vstring(buffer.data) }
 	if offset < 0 {
-		return '$prefix: error $error_code: $err_msg'
+		return '$prefix: pattern: "$pattern": error $error_code "$err_msg"'
 	} else {
-		return '$prefix: error $error_code at offset $offset: $err_msg'
+		return '$prefix: pattern: "$pattern": error $error_code "$err_msg" at offset $offset'
 	}
 }
 
@@ -87,12 +87,12 @@ pub fn compile(pattern string) !Regex {
 	mut error_offset := usize(0)
 	r := C.pcre2_compile(pattern.str, pattern.len, 0, &error_code, &error_offset, 0)
 	if isnil(r) {
-		return error(get_error_message('pcre2_compile()', error_code, int(error_offset)))
+		return error(get_error_message('pcre2_compile()', pattern, error_code, int(error_offset)))
 	}
 	mut capture_count := 0
 	error_code = C.pcre2_pattern_info(r, C.PCRE2_INFO_CAPTURECOUNT, &capture_count)
 	if error_code != 0 {
-		return error(get_error_message('pcre2_pattern_info()', error_code, -1))
+		return error(get_error_message('pcre2_pattern_info()', pattern, error_code, -1))
 	}
 	return Regex{pattern, capture_count, r}
 }
@@ -138,7 +138,7 @@ fn (r &Regex) find_match(subject string, pos int) ?MatchData {
 				return none
 			}
 			else {
-				return error(get_error_message('pcre2_match()', count, -1))
+				return error(get_error_message('pcre2_match()', r.pattern, count, -1))
 			}
 		}
 	}
@@ -403,7 +403,7 @@ fn (r &Regex) substitute(subject string, pos int, repl string, options int) !str
 			0, 0, repl.str, repl.len, outbuffer.data, &outlen)
 	}
 	if count < 0 {
-		return error(get_error_message('pcre2_substitute()', count, int(outlen)))
+		return error(get_error_message('pcre2_substitute()', r.pattern, count, int(outlen)))
 	}
 	if count == 0 {
 		return subject

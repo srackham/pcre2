@@ -50,7 +50,7 @@ fn test_find_match() {
 		assert false, 'should have returned error'
 	} else {
 		assert err !is none, 'should not have returned none'
-		assert err.msg() == 'pcre2_match(): error -47: match limit exceeded'
+		assert err.msg() == r'pcre2_match(): pattern: "^\\?\.((?:\s*[a-zA-Z][\w\-]*)+)*(?:\s*)?(#[a-zA-Z][\w\-]*\s*)?(?:\s*)?(?:"(.+?)")?(?:\s*)?(\[.+])?(?:\s*)?([+-][ \w+-]+)?$": error -47 "match limit exceeded"'
 	}
 	if _ := r.find_match('.x = ', 0) { // Does not match (returns none)
 		assert false, 'should have returned none'

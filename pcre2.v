@@ -31,7 +31,7 @@ pub fn (r1 Regex) == (r2 Regex) bool {
 
 // `str` returns a human-readable representation of a `Regex`.
 pub fn (r Regex) str() string {
-	return 'RegEx{ pattern: $r.pattern, subpattern_count: $r.subpattern_count, re: 0x${u64(r.re).hex()} }'
+	return 'RegEx{ pattern: ${r.pattern}, subpattern_count: ${r.subpattern_count}, re: 0x${u64(r.re).hex()} }'
 }
 
 // `is_nil` returns true if the `r` has not been initialized with a compiled PCRE2 regular expression.
@@ -46,9 +46,9 @@ fn get_error_message(prefix string, pattern string, error_code int, offset int) 
 	C.pcre2_get_error_message(error_code, buffer.data, buffer.len)
 	err_msg := unsafe { cstring_to_vstring(buffer.data) }
 	if offset < 0 {
-		return '$prefix: pattern: "$pattern": error $error_code "$err_msg"'
+		return '${prefix}: pattern: "${pattern}": error ${error_code} "${err_msg}"'
 	} else {
-		return '$prefix: pattern: "$pattern": error $error_code "$err_msg" at offset $offset'
+		return '${prefix}: pattern: "${pattern}": error ${error_code} "${err_msg}" at offset ${offset}'
 	}
 }
 
@@ -57,7 +57,7 @@ fn get_error_message(prefix string, pattern string, error_code int, offset int) 
 // * Returns an error if `number` is less than zero or greater than the total number of subpatterns.
 fn (m MatchData) get(number int) ?string {
 	if number < 0 || number >= m.ovector.len / 2 {
-		return error('number $number is out of bounds')
+		return error('number ${number} is out of bounds')
 	}
 	if m.ovector[number * 2] < 0 {
 		return ''
@@ -125,7 +125,7 @@ pub fn (r &Regex) is_match(subject string) bool {
 // If no match is found `none` is returned, if an error occurs an error is returned.
 fn (r &Regex) find_match(subject string, pos int) ?MatchData {
 	if pos < 0 || pos > subject.len {
-		return error('search pos index out of bounds: $pos')
+		return error('search pos index out of bounds: ${pos}')
 	}
 	match_data := C.pcre2_match_data_create_from_pattern(r.re, 0)
 	defer {
@@ -380,7 +380,7 @@ fn replace_matches(subject string, matches []string) string {
 		} else {
 			i := m[1].int()
 			if i >= matches.len {
-				return '$$i'
+				return '$${i}'
 			}
 			return matches[i]
 		}

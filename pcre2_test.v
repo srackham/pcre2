@@ -229,7 +229,7 @@ fn test_find() {
 fn test_replace_fn() {
 	mut r := pcre2.must_compile(r'(x|y|z)')
 	assert r.replace_n_fn('z yx', fn (m string) string {
-		return '<$m>'
+		return '<${m}>'
 	}, -1) == '<z> <y><x>'
 }
 

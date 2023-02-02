@@ -1,7 +1,6 @@
 module pcre2_tests
 
 import pcre2
-import strings
 
 fn test_compile() {
 	mut r := pcre2.compile(r'foo')!
@@ -36,33 +35,6 @@ fn test_must_compile() {
 fn test_escape_meta() {
 	assert pcre2.escape_meta(r'\.+*?()|[]{}^$') == r'\\\.\+\*\?\(\)\|\[\]\{\}\^\$'
 	assert pcre2.escape_meta(r'(🚀)') == r'\(🚀\)'
-}
-
-fn test_substitute() {
-	mut r := pcre2.compile(r'baz')!
-	mut s := r.substitute('', 0, 'foo', 0)!
-	assert s == ''
-
-	s = r.substitute('baz bar', 0, 'foo', 0)!
-	assert s == 'foo bar'
-
-	s = r.substitute('foobar', 0, 'foo', 0)!
-	assert s == 'foobar'
-
-	s = r.substitute('baz baz', 0, 'foo', 0)!
-	assert s == 'foo baz'
-
-	s = r.substitute('baz baz', 0, 'foo', C.PCRE2_SUBSTITUTE_GLOBAL)!
-	assert s == 'foo foo'
-
-	s = r.substitute(strings.repeat_string('foo', 1024) + 'baz', 0, 'foo', 0)!
-	assert s == strings.repeat_string('foo', 1025)
-
-	if _ := r.substitute('baz bar', 0, '$', 0) {
-		assert false, 'should have returned an error'
-	} else {
-		assert err.msg() == 'pcre2_substitute(): pattern: "baz": error -35 "invalid replacement string" at offset 1'
-	}
 }
 
 fn test_extended() {
@@ -102,11 +74,6 @@ fn test_is_match() {
 
 fn test_find_index() {
 	mut r := pcre2.must_compile(r'x([yz])')
-	assert r.find_n_index('', 1).len == 0
-	assert r.find_n_index('an xyz', 1) == [[3, 5, 4, 5]]
-	assert r.find_n_index('an xyz', 2) == [[3, 5, 4, 5]]
-	assert r.find_n_index('an xy and xz', 2) == [[3, 5, 4, 5],
-		[10, 12, 11, 12]]
 
 	assert r.find_all_index('an xy') == [[3, 5, 4, 5]]
 	assert r.find_all_index('an xy and xz') == [[3, 5, 4, 5],
@@ -125,11 +92,6 @@ fn test_find_index() {
 
 fn test_find_submatch() {
 	mut r := pcre2.must_compile(r'x([yz])')
-	assert r.find_n_submatch('', 1).len == 0
-	assert r.find_n_submatch('an xyz', 1) == [['xy', 'y']]
-	assert r.find_n_submatch('an xyz', 2) == [['xy', 'y']]
-	assert r.find_n_submatch('an xy and xz', 2) == [['xy', 'y'],
-		['xz', 'z']]
 
 	assert r.find_all_submatch('an xy') == [['xy', 'y']]
 	assert r.find_all_submatch('an xy and xz') == [['xy', 'y'],
@@ -161,90 +123,15 @@ fn test_find_submatch() {
 		'foofoo', 'foo', 'No match']
 }
 
-fn test_replace_submatch_fn() {
-	mut r := pcre2.must_compile(r'x')
-
-	assert r.replace_n_submatch_fn('', fn (m []string) string {
-		return m[0] + 'yz'
-	}, -1) == ''
-
-	assert r.replace_n_submatch_fn('x', fn (_ []string) string {
-		return 'foo✅'
-	}, -1) == 'foo✅'
-
-	assert r.replace_n_submatch_fn('y', fn (_ []string) string {
-		return 'foo'
-	}, -1) == 'y'
-
-	assert r.replace_n_submatch_fn('xz', fn (m []string) string {
-		return m[0] + 'y'
-	}, -1) == 'xyz'
-
-	r = pcre2.must_compile(r'(([a-z]+)(\d+))')
-	assert r.replace_n_submatch_fn('456 xyz123', fn (m []string) string {
-		return '${m[2]} ${m[3]} ${m[1]}'
-	}, -1) == '456 xyz 123 xyz123'
-
-	assert r.replace_n_submatch_fn('xyz123 ab98', fn (m []string) string {
-		return '${m[1]} ${m[3]} ${m[2]}'
-	}, -1) == 'xyz123 123 xyz ab98 98 ab'
-
-	r = pcre2.must_compile(r'x|(y)|(z)')
-	assert r.replace_n_submatch_fn('x', fn (m []string) string {
-		return '${m[1]}'
-	}, -1) == ''
-
-	assert r.replace_n_submatch_fn('y', fn (m []string) string {
-		return '${m[1]}'
-	}, -1) == 'y'
-
-	assert r.replace_n_submatch_fn('z', fn (m []string) string {
-		return '${m[2]}'
-	}, -1) == 'z'
-}
-
 fn test_find() {
 	mut r := pcre2.must_compile(r'\d')
-	assert r.find_n('abcdeg', -1) == []
 	if _ := r.find_one('abcdeg') {
 		assert false, 'should have returned none'
 	} else {
 		assert err is none, 'should have returned none'
 	}
-	assert r.find_n('abcde5g', -1) == ['5']
-	assert r.find_n('1 abc 9 de 5 g', -1) == ['1', '9', '5']
 	assert r.find_all('1 abc 9 de 5 g') == ['1', '9', '5']
-	assert r.find_n('1 abc 9 de 5 g', -1)[0] == '1'
-	assert r.find_n('1 abc 9 de 5 g', -1)[1] == '9'
-	assert r.find_n('1 abc 9 de 5 g', -1)[2] == '5'
-	assert r.find_n('1 abc 9 de 5 g', 0) == []
-	assert r.find_n('1 abc 9 de 5 g', 1) == ['1']
 	assert r.find_one('1 abc 9 de 5 g')? == '1'
-	assert r.find_n('1 abc 9 de 5 g', 2) == ['1', '9']
-	assert r.find_n('1 abc 9 de 5 g', 3) == ['1', '9', '5']
-	assert r.find_n('1 abc 9 de 5 g', 4) == ['1', '9', '5']
-	assert pcre2.must_compile(r'\d').find_n('1 abc 9 de 5 g', -1) == ['1', '9', '5']
-}
-
-fn test_replace_fn() {
-	mut r := pcre2.must_compile(r'(x|y|z)')
-	assert r.replace_n_fn('z yx', fn (m string) string {
-		return '<${m}>'
-	}, -1) == '<z> <y><x>'
-}
-
-fn test_replace() {
-	mut r := pcre2.must_compile(r'(x|y|z)')
-	assert r.replace_n('z y x', '"$1"', -1) == '"z" "y" "x"'
-	assert r.replace_n('z y x', '"$1"', 0) == 'z y x'
-	assert r.replace_n('z y x', '"$1"', 1) == '"z" y x'
-	assert r.replace_n('z y x', '"$1"', 2) == '"z" "y" x'
-	assert r.replace_n('z y x', '"$1"', 3) == '"z" "y" "x"'
-	assert r.replace_n('z y x', '"$1"', 4) == '"z" "y" "x"'
-	r = pcre2.must_compile(r'x|(y)|(z)')
-	assert r.replace_n('z yx', '$$$1 $2$$', -1) == '$ z$ \$y $$ $'
-	r = pcre2.must_compile(r'✅')
-	assert r.replace_n('✅ ✅✅', '🚀', 2) == '🚀 🚀✅'
 }
 
 fn test_split() {

@@ -9,7 +9,7 @@ SHELL := bash
 .ONESHELL:
 .SILENT:
 
-.PHONY: test build fmt docs run-examples
+.PHONY: test build fmt docs run-examples tag push
 
 test:
 	v -cstrict test .
@@ -30,3 +30,11 @@ run-examples:
 	echo "NOTE: runs examples using installed 'srackham.pcre2' module"
 	echo
 	bash -c 'cd examples && for f in pcre2-example-*.v; do v -cstrict run $$f; done'
+
+tag: test
+	tag=$(VERS)
+	echo tag: $$tag
+	git tag -a -m "$$tag" "$$tag"
+
+push: test
+	git push -u --tags origin master

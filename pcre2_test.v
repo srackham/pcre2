@@ -37,6 +37,36 @@ fn test_escape_meta() {
 	assert pcre2.escape_meta(r'(🚀)') == r'\(🚀\)'
 }
 
+fn test_is_nil() {
+	mut r := pcre2.compile(r'foo')!
+	assert(!r.is_nil())
+	r = pcre2.Regex{}
+	assert(r.is_nil())
+}
+
+fn test_replace() {
+	// Token test for public API wrapper functions, see pcre2_internal_test.v
+	mut r := pcre2.must_compile(r'(x|y|z)')
+
+	assert r.replace_all('z y x', '"$1"') == '"z" "y" "x"'
+	assert r.replace_one('z y x', '"$1"') == '"z" y x'
+
+	assert r.replace_one_fn('z yx', fn (m string) string {
+		return '<${m}>'
+	}) == '<z> yx'
+	assert r.replace_all_fn('z yx', fn (m string) string {
+		return '<${m}>'
+	}) == '<z> <y><x>'
+
+	r = pcre2.must_compile(r'(([a-z]+)(\d+))')
+	assert r.replace_one_submatch_fn('abc456 xyz123', fn (m []string) string {
+		return '${m[2]} ${m[3]} ${m[1]}'
+	}) == 'abc 456 abc456 xyz123'
+	assert r.replace_all_submatch_fn('abc456 xyz123', fn (m []string) string {
+		return '${m[2]} ${m[3]} ${m[1]}'
+	}) == 'abc 456 abc456 xyz 123 xyz123'
+}
+
 fn test_extended() {
 	mut r := pcre2.compile(r'baz')!
 	mut subject := 'baz baz'

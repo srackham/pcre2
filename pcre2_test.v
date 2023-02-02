@@ -39,9 +39,9 @@ fn test_escape_meta() {
 
 fn test_is_nil() {
 	mut r := pcre2.compile(r'foo')!
-	assert(!r.is_nil())
+	assert !r.is_nil()
 	r = pcre2.Regex{}
-	assert(r.is_nil())
+	assert r.is_nil()
 }
 
 fn test_replace() {

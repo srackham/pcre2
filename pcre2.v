@@ -55,7 +55,7 @@ fn get_error_message(prefix string, pattern string, error_code int, offset int) 
 // `get` returns captured match and submatch strings by `number`. The number zero refers to the entire match, with numbers 1.. referring to parenthesized subpatterns.
 // * Returns '' if the subpattern did not participate in the match.
 // * Returns an error if `number` is less than zero or greater than the total number of subpatterns.
-fn (m MatchData) get(number int) ?string {
+fn (m MatchData) get(number int) !string {
 	if number < 0 || number >= m.ovector.len / 2 {
 		return error('number ${number} is out of bounds')
 	}
@@ -123,7 +123,7 @@ pub fn (r &Regex) is_match(subject string) bool {
 
 // `find_match` searches the `subject` string starting at index `pos` and returns a `MatchData` struct.
 // If no match is found `none` is returned, if an error occurs an error is returned.
-fn (r &Regex) find_match(subject string, pos int) ?MatchData {
+fn (r &Regex) find_match(subject string, pos int) !MatchData {
 	if pos < 0 || pos > subject.len {
 		return error('search pos index out of bounds: ${pos}')
 	}
@@ -135,7 +135,7 @@ fn (r &Regex) find_match(subject string, pos int) ?MatchData {
 	if count < 0 {
 		match count {
 			C.PCRE2_ERROR_NOMATCH {
-				return none
+				return error('')
 			}
 			else {
 				return error(get_error_message('pcre2_match()', r.pattern, count, -1))

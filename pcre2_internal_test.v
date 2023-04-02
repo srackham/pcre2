@@ -9,9 +9,7 @@ fn test_find_match() {
 	assert m.ovector == [4, 7]
 
 	if _ := r.find_match('', 1) {
-		assert false, 'should have returned an error'
-	} else {
-		assert err.msg() == 'search pos index out of bounds: 1'
+		assert false, 'should have returned none'
 	}
 
 	if _ := r.find_match('', 0) {
@@ -48,12 +46,17 @@ fn test_find_match() {
 	*/
 	r = compile(r'^\\?\.((?:\s*[a-zA-Z][\w\-]*)+)*(?:\s*)?(#[a-zA-Z][\w\-]*\s*)?(?:\s*)?(?:"(.+?)")?(?:\s*)?(\[.+])?(?:\s*)?([+-][ \w+-]+)?$')!
 	_ := r.find_match('.x', 0)? // Valid match
-	if _ := r.find_match('.xxxxxxxxxxxxx = ', 0) { // Triggers error -47
+
+	/*
+	This triggers a PCRE2 error -47 but V can't recover from (catch) panics so we can't test it.
+	if _ := r.find_match('.xxxxxxxxxxxxx = ', 0) { // Triggers PCRE2 error -47
 		assert false, 'should have returned error'
 	} else {
 		assert err !is none, 'should not have returned none'
 		assert err.msg() == r'pcre2_match(): pattern: "^\\?\.((?:\s*[a-zA-Z][\w\-]*)+)*(?:\s*)?(#[a-zA-Z][\w\-]*\s*)?(?:\s*)?(?:"(.+?)")?(?:\s*)?(\[.+])?(?:\s*)?([+-][ \w+-]+)?$": error -47 "match limit exceeded"'
 	}
+	*/
+
 	if _ := r.find_match('.x = ', 0) { // Does not match (returns none)
 		assert false, 'should have returned none'
 	} else {

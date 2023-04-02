@@ -55,7 +55,7 @@ fn get_error_message(prefix string, pattern string, error_code int, offset int) 
 // `get` returns captured match and submatch strings by `number`. The number zero refers to the entire match, with numbers 1.. referring to parenthesized subpatterns.
 // * Returns '' if the subpattern did not participate in the match.
 // * Returns an error if `number` is less than zero or greater than the total number of subpatterns.
-fn (m MatchData) get(number int) ?string {
+fn (m MatchData) get(number int) !string {
 	if number < 0 || number >= m.ovector.len / 2 {
 		return error('number ${number} is out of bounds')
 	}
@@ -122,10 +122,11 @@ pub fn (r &Regex) is_match(subject string) bool {
 }
 
 // `find_match` searches the `subject` string starting at index `pos` and returns a `MatchData` struct.
-// If no match is found `none` is returned, if an error occurs an error is returned.
+// * If no match is found `none` is returned,
+// * If an unexpected PCRE2 error occurs a panic is raised.
 fn (r &Regex) find_match(subject string, pos int) ?MatchData {
 	if pos < 0 || pos > subject.len {
-		return error('search pos index out of bounds: ${pos}')
+		return none
 	}
 	match_data := C.pcre2_match_data_create_from_pattern(r.re, 0)
 	defer {
@@ -138,7 +139,7 @@ fn (r &Regex) find_match(subject string, pos int) ?MatchData {
 				return none
 			}
 			else {
-				return error(get_error_message('pcre2_match()', r.pattern, count, -1))
+				panic(get_error_message('pcre2_match()', r.pattern, count, -1))
 			}
 		}
 	}
@@ -388,10 +389,10 @@ fn replace_matches(subject string, matches []string) string {
 }
 
 // `substitute` is a wrapper for the PCRE2 `pcre2_substitute` API.
-// It returns a copy of the `subject` string in which matches of the regular expression after index `pos` are replaced by the `repl` string.
-// `options` is passed to the PCRE2 `pcre2_substitute` API.
-// By default only the first match is replaced, use the `C.PCRE2_SUBSTITUTE_GLOBAL` option to replace all matches.
-// If no matches are found the unmodified `subject` is returned.
+// It returns a copy of the `subject` string in which matches of the regular expression after index `pos` are replaced by the `repl` string. `options` is passed to the PCRE2 `pcre2_substitute` API.
+// * By default only the first match is replaced, use the `C.PCRE2_SUBSTITUTE_GLOBAL` option to replace all matches.
+// * If no matches are found the unmodified `subject` is returned.
+// * An error is returned if a PCRE2 error occurs.
 fn (r &Regex) substitute(subject string, pos int, repl string, options int) !string {
 	mut outbuffer := []u8{len: 1024}
 	outlen := usize(outbuffer.len)
@@ -415,14 +416,14 @@ fn (r &Regex) substitute(subject string, pos int, repl string, options int) !str
 // The `repl` string supports the PCRE2 extended replacements string syntax (see `PCRE2_SUBSTITUTE_EXTENDED` in the [pcre2api](https://www.pcre.org/current/doc/html/pcre2api.html) man page).
 pub fn (r &Regex) replace_all_extended(subject string, repl string) string {
 	return r.substitute(subject, 0, repl, C.PCRE2_SUBSTITUTE_EXTENDED | C.PCRE2_SUBSTITUTE_GLOBAL) or {
-		subject
+		err.msg()
 	}
 }
 
 // `replace_one_extended` returns a copy of the `subject` string with the first match of the regular expression replaced by the `repl` string.
 // The `repl` string supports the PCRE2 extended replacements string syntax (see `PCRE2_SUBSTITUTE_EXTENDED` in the [pcre2api](https://www.pcre.org/current/doc/html/pcre2api.html) man page).
 pub fn (r &Regex) replace_one_extended(subject string, repl string) string {
-	return r.substitute(subject, 0, repl, C.PCRE2_SUBSTITUTE_EXTENDED) or { subject }
+	return r.substitute(subject, 0, repl, C.PCRE2_SUBSTITUTE_EXTENDED) or { err.msg() }
 }
 
 // `split_n` splits the `subject` string at regular expression match boundaries and returns an array of the split strings.

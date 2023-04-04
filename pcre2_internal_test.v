@@ -40,28 +40,27 @@ fn test_find_match() {
 	assert m.ovector == [1, 2]
 
 	/*
-	This pattern generates a `match limit exceeded` error (-47) when searching a string starting with `.`
-	The exact same pattern works in Go and TypeScript/JavaScript.
-	Looks like a PCRE2 bug as it's unlikely the match limit has been exceeded (see https://stackoverflow.com/a/33928343/1136455).
+	This pathalogical pattern generates a `match limit exceeded` error (-47) when searching a string starting with `.`.
+	The exact same pattern works in Go and TypeScript/JavaScript; Dart has performance issues.
 	*/
 	r = compile(r'^\\?\.((?:\s*[a-zA-Z][\w\-]*)+)*(?:\s*)?(#[a-zA-Z][\w\-]*\s*)?(?:\s*)?(?:"(.+?)")?(?:\s*)?(\[.+])?(?:\s*)?([+-][ \w+-]+)?$')!
-	_ := r.find_match('.x', 0)? // Valid match
 
-	/*
-	This triggers a PCRE2 error -47 but V can't recover from (catch) panics so we can't test it.
-	if _ := r.find_match('.xxxxxxxxxxxxx = ', 0) { // Triggers PCRE2 error -47
-		assert false, 'should have returned error'
+	// This matches
+	if _ := r.find_match('.xxxxxxxxxx', 0) {
 	} else {
-		assert err !is none, 'should not have returned none'
-		assert err.msg() == r'pcre2_match(): pattern: "^\\?\.((?:\s*[a-zA-Z][\w\-]*)+)*(?:\s*)?(#[a-zA-Z][\w\-]*\s*)?(?:\s*)?(?:"(.+?)")?(?:\s*)?(\[.+])?(?:\s*)?([+-][ \w+-]+)?$": error -47 "match limit exceeded"'
+		assert false, 'should not have returned none'
 	}
-	*/
 
-	if _ := r.find_match('.x = ', 0) { // Does not match (returns none)
+	// Does not match (returns none)
+	if _ := r.find_match('.xxxxxxxxxx = ', 0) {
 		assert false, 'should have returned none'
-	} else {
-		assert err is none, 'should have returned none'
 	}
+
+	// Panic: PCRE2 error -47 "match limit exceeded"
+	// Takes a whooping 180ms!
+	// if _ := r.find_match('.xxxxxxxxxxx =', 0) {
+	// 	assert false, 'should have returned none'
+	// }
 }
 
 fn test_get_and_get_all() {

@@ -75,3 +75,6 @@ Test the installation by running:
     v test $HOME/.vmodules/srackham/pcre2
 
 Example installation and test workflows for Ubuntu, macOS and Windows can be found in the Github Actions [workflow file](https://github.com/srackham/pcre2/blob/master/.github/workflows/ci.yml).
+
+## Performance
+Complex patterns can cause PCRE2 resource exhaustion. `find_*` library functions respond to such errors by raising a panic. The solution is to simplify the offending pattern.  Unlike, for example, the Go regexp package, PCRE2 does not have linear-time performance and while they may not trigger a panic, pathalogical patterns can exhibit slow performance. See the PCRE2 [pcre2perform man page](https://www.pcre.org/current/doc/html/pcre2perform.html).

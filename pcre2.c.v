@@ -13,16 +13,16 @@ module pcre2
 #define PCRE2_CODE_UNIT_WIDTH 8
 #include "pcre2.h"
 
-[typedef]
+@[typedef]
 struct C.pcre2_code {}
 
-[typedef]
+@[typedef]
 struct C.pcre2_match_data {}
 
-[typedef]
+@[typedef]
 struct C.pcre2_match_context {}
 
-[typedef]
+@[typedef]
 struct C.pcre2_compile_context {}
 
 fn C.pcre2_code_free(code &C.pcre2_code)
